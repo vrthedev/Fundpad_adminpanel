@@ -30,7 +30,7 @@ const PrivateRoute = withRouter(
   connect(mapStateToProps)((props) => {
     if (props.credential.loginToken)
       return (
-        <Route path="/bot" render={(props) => <AdminLayout {...props} />} />
+        <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       );
     else return <Redirect to="/auth/login" />;
   })
@@ -50,9 +50,9 @@ ReactDOM.render(
         <BrowserRouter>
           <Switch>
             <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-            <PrivateRoute path="/bot" />
-            {/* <Redirect from="/" to="/bot/nft_bot" /> */}
-            <Redirect from="/" to="/bot/dashboard" />
+            <PrivateRoute path="/admin" />
+            {/* <Redirect from="/" to="/admin/nft_bot" /> */}
+            <Redirect from="/" to="/admin/dashboard" />
           </Switch>
         </BrowserRouter>
       </PersistGate>

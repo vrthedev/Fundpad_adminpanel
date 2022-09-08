@@ -145,7 +145,13 @@ const Search = (props) => {
                             </a>
                           </td>
                           <td className="text-left">
-                            <a href={"/bot/contract/" + item.node.address+"/search"}>
+                            <a
+                              href={
+                                "/admin/contract/" +
+                                item.node.address +
+                                "/search"
+                              }
+                            >
                               <Button
                                 style={{ marginRight: "8px" }}
                                 color="info"

@@ -44,36 +44,11 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 // Our table component
-function Table({ columns, data }) {
+function Table({ columns, data, isProfit, title, isExport }) {
   const [numberOfRows, setNumberOfRows] = React.useState(10);
   const [pageSelect, handlePageSelect] = React.useState(0);
-  // const filterTypes = React.useMemo(
-  //   () => ({
-  //     // Add a new fuzzyTextFilterFn filter type.
-  //     fuzzyText: fuzzyTextFilterFn,
-  //     // Or, override the default text filter to use
-  //     // "startWith"
-  //     text: (rows, id, filterValue) => {
-  //       return rows.filter((row) => {
-  //         const rowValue = row.values[id];
-  //         return rowValue !== undefined
-  //           ? String(rowValue)
-  //               .toLowerCase()
-  //               .startsWith(String(filterValue).toLowerCase())
-  //           : true;
-  //       });
-  //     },
-  //   }),
-  //   []
-  // );
 
-  const defaultColumn = React.useMemo(
-    () => ({
-      // Let's set up our default Filter UI
-      // Filter: DefaultColumnFilter,
-    }),
-    []
-  );
+  const defaultColumn = React.useMemo(() => ({}), []);
 
   const {
     getTableProps,
@@ -104,9 +79,6 @@ function Table({ columns, data }) {
     usePagination
   );
 
-  // We don't want to render all of the rows for this example, so cap
-  // it for this use case
-  // const firstPageRows = rows.slice(0, 10);
   let pageSelectData = Array.apply(null, Array(pageOptions.length)).map(
     function () {}
   );
@@ -115,93 +87,44 @@ function Table({ columns, data }) {
     <>
       <div className="ReactTable -striped -highlight">
         <div className="pagination-top">
-          {/* Pledges */}
-          <div className="-pagination" style={{ float: "right" }}>
-            {/* <div className="-previous">
-              <button
-                type="button"
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-                className="-btn"
-                style={{
-                  width: "35px",
-                  height: "35px",
-                  padding: "0px",
-                  borderRadius: "20px",
-                }}
-              >
-                <i className="tim-icons icon-minimal-left" />
-              </button>
+          <span style={{ float: "left", marginLeft: 40 }}>
+            <h4>{title}</h4>
+          </span>
+          {isExport && (
+            <div className="-pagination" style={{ float: "right" }}>
+              {isProfit ? (
+                <Link to="/admin/profit">
+                  <button
+                    type="button"
+                    className="-btn"
+                    style={{
+                      width: "69px",
+                      height: "35px",
+                      padding: "0px",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    More
+                  </button>
+                </Link>
+              ) : (
+                <Link to="/admin/pledge">
+                  <button
+                    type="button"
+                    className="-btn"
+                    style={{
+                      width: "69px",
+                      height: "35px",
+                      padding: "0px",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    More
+                  </button>
+                </Link>
+              )}
             </div>
-            <div className="-center flex-nowrap">
-              <Select
-                className="react-select info mx-1 w-90"
-                classNamePrefix="react-select"
-                name="singleSelect"
-                value={pageSelect}
-                onChange={(value) => {
-                  gotoPage(value.value);
-                  handlePageSelect(value);
-                }}
-                options={pageSelectData.map((prop, key) => {
-                  return {
-                    value: key,
-                    label: key + 1,
-                  };
-                })}
-                placeholder="Page"
-              />
-            </div>
-            <div className="-next">
-              <button
-                type="button"
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-                className="-btn"
-                style={{
-                  width: "35px",
-                  height: "35px",
-                  padding: "0px",
-                  borderRadius: "20px",
-                }}
-              >
-                <i className="tim-icons icon-minimal-right" />
-              </button>
-            </div>
-            <Select
-              className="react-select info mx-1"
-              classNamePrefix="react-select"
-              name="singleSelect"
-              style={{ width: 80 }}
-              value={numberOfRows}
-              onChange={(value) => {
-                console.log(value);
-                setPageSize(value.value);
-                setNumberOfRows(value);
-              }}
-              options={numberOfRowsData.map((prop) => {
-                return {
-                  value: prop,
-                  label: prop,
-                };
-              })}
-              placeholder="Rows"
-            /> */}
-            <Link to="/bot/pledge">
-              <button
-                type="button"
-                className="-btn"
-                style={{
-                  width: "69px",
-                  height: "35px",
-                  padding: "0px",
-                  borderRadius: "4px",
-                }}
-              >
-                Edit
-              </button>
-            </Link>
-          </div>
+          )}
         </div>
         <table {...getTableProps()} className="rt-table">
           <thead className="rt-thead -header">

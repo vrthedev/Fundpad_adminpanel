@@ -23,6 +23,7 @@ import Footer from "components/Footer/Footer.js";
 import routes from "routes.js";
 
 const Pages = (props) => {
+  console.log(props, "----------------props");
   React.useEffect(() => {
     document.documentElement.classList.remove("nav-open");
   });

@@ -140,7 +140,7 @@ const AdminNavbar = (props) => {
                   <NavLink tag="li">
                     <DropdownItem
                       className="nav-item"
-                      onClick={() => props.history.push("/bot/settings")}
+                      onClick={() => props.history.push("/admin/settings")}
                     >
                       Change Password
                     </DropdownItem>

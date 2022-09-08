@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import classNames from "classnames";
 import {
   Card,
@@ -14,94 +15,44 @@ import {
   Form,
   FormGroup,
 } from "reactstrap";
-
+import Moment from "moment";
+import Select from "react-select";
+import NotificationAlert from "react-notification-alert";
 import ReactTable from "components/ReactTable/ReactTable1.js";
 
-const dataTable = [
-  {
-    _id: "1",
-    project: { _id: "1", name: "Airi Satou" },
-    amount: 2,
-    transaction: "transaction1",
-    referrer: {
-      _id: "2",
-      name: "referror1",
-    },
-    status: 0,
-  },
-  {
-    _id: "2",
-    project: { _id: "2", name: "Gdfg Jisdi" },
-    amount: 43,
-    transaction: "transaction2",
-    referrer: {
-      _id: "2",
-      name: "dfgwe",
-    },
-    status: 1,
-  },
-  {
-    _id: "3",
-    project: { _id: "3", name: "Gds Bddd" },
-    amount: 234,
-    transaction: "transaction3",
-    referrer: {
-      _id: "3",
-      name: "Hdrg Deok",
-    },
-    status: 0,
-  },
-  {
-    _id: "4",
-    project: { _id: "4", name: "Iosk Did" },
-    amount: 74,
-    transaction: "transaction4",
-    referrer: {
-      _id: "4",
-      name: "Dei Jij",
-    },
-    status: 0,
-  },
-  {
-    _id: "5",
-    project: { _id: "5", name: "Gdfg Jisdi" },
-    amount: 43,
-    transaction: "transaction5",
-    referrer: {
-      _id: "5",
-      name: "Dwe KOo",
-    },
-    status: 2,
-  },
-  {
-    _id: "6",
-    project: { _id: "6", name: "Dfe Dfe" },
-    amount: 12,
-    transaction: "transaction6",
-    referrer: {
-      _id: "6",
-      name: "Dfe Hfe",
-    },
-    status: 1,
-  },
-];
-
-const Pledge = () => {
+const Pledge = ({ credential }) => {
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
-  const [pledge, setPledge] = useState({
-    project: {},
-    referrer: {},
-  });
-  console.log(pledge, "-------------pledge");
+  const [pledges, setPledges] = useState([]);
+  const [pledge, setPledge] = useState({});
+
+  const { apiConfig, ApiCall } = global;
+  const notificationAlertRef = React.useRef(null);
+
+  const notify = (message, type) => {
+    let options = {};
+    options = {
+      place: "tr",
+      message: message,
+      type: type,
+      icon: "tim-icons icon-bell-55",
+      autoDismiss: 7,
+    };
+    notificationAlertRef.current.notificationAlert(options);
+  };
 
   const openModal = (data) => {
-    setPledge(data);
+    if (data.investor)
+      setPledge({
+        ...data,
+        investor: { value: data.investor_id, label: data.investor.fullname },
+      });
+    else setPledge({});
     setShow(true);
   };
 
   const closeModal = () => {
-    setPledge({ project: {}, referrer: {} });
+    setPledge({});
     setShow(false);
   };
 
@@ -111,35 +62,168 @@ const Pledge = () => {
   };
 
   const closeModal1 = () => {
-    setPledge({ project: {}, referrer: {} });
+    setPledge({});
     setShow1(false);
   };
-  const save = (data) => {
-    alert("save");
-    setPledge({ project: {}, referrer: {} });
+
+  const save = async (plee) => {
+    plee = { ...plee, investor_id: plee.investor.value };
+    delete plee.investor;
+    delete plee.referrer;
+    try {
+      const response = await ApiCall(
+        apiConfig.pledge_upsert.url,
+        apiConfig.pledge_upsert.method,
+        credential.loginToken,
+        plee
+      );
+      if (response.data.result) {
+        const response = await ApiCall(
+          apiConfig.pledge_get.url,
+          apiConfig.pledge_get.method,
+          credential.loginToken
+        );
+        if (response.data.result) {
+          setPledges(
+            response.data.data.map((p) => {
+              const invs = investors.filter((i) => p.investor_id === i._id);
+              const refs = investors.filter((r) => p.referrer_id === r._id);
+              return {
+                ...p,
+                investor: invs.length > 0 ? invs[0] : {},
+                referrer: refs.length > 0 ? refs[0] : {},
+              };
+            })
+          );
+        } else {
+          notify(response.data.message, "danger");
+        }
+      } else {
+        notify(response.data.message, "danger");
+      }
+    } catch (error) {
+      notify("Failed in getting all plans.", "danger");
+    }
+    setPledge({});
     setShow(false);
   };
 
-  const remove = (data) => {
-    alert(data._id);
-    setPledge({ project: {}, referrer: {} });
+  const remove = async (data) => {
+    try {
+      const response = await ApiCall(
+        apiConfig.pledge_del.url,
+        apiConfig.pledge_del.method,
+        credential.loginToken,
+        data
+      );
+      if (response.data.result) {
+        const response = await ApiCall(
+          apiConfig.pledge_get.url,
+          apiConfig.pledge_get.method,
+          credential.loginToken
+        );
+        if (response.data.result) {
+          setPledges(
+            response.data.data.map((p) => {
+              const invs = investors.filter((i) => p.investor_id === i._id);
+              const refs = investors.filter((r) => p.referrer_id === r._id);
+              return {
+                ...p,
+                investor: invs.length > 0 ? invs[0] : {},
+                referrer: refs.length > 0 ? refs[0] : {},
+              };
+            })
+          );
+        } else {
+          notify(response.data.message, "danger");
+        }
+      } else {
+        notify(response.data.message, "danger");
+      }
+    } catch (error) {
+      if (error.response) notify(error.response.data.message, "danger");
+      else if (error.request) notify("Request failed", "danger");
+      else notify("Something went wrong", "danger");
+    }
+    setPledge({});
     setShow1(false);
   };
 
-  const [data, setData] = React.useState(
-    dataTable.map((prop, key) => {
+  const [investors, setInvestors] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await ApiCall(
+          apiConfig.appuser_get.url,
+          apiConfig.appuser_get.method,
+          credential.loginToken
+        );
+        if (response.data.result) {
+          const invests = response.data.data;
+          setInvestors(invests);
+          const resp = await ApiCall(
+            apiConfig.pledge_get.url,
+            apiConfig.pledge_get.method,
+            credential.loginToken
+          );
+          if (resp.data.result) {
+            setPledges(
+              resp.data.data.map((p) => {
+                const invs = invests.filter((i) => p.investor_id === i._id);
+                const refs = invests.filter((r) => p.referrer_id === r._id);
+                return {
+                  ...p,
+                  investor: invs.length > 0 ? invs[0] : {},
+                  referrer: refs.length > 0 ? refs[0] : {},
+                };
+              })
+            );
+          } else {
+            notify(response.data.message, "danger");
+          }
+        } else {
+          notify(response.data.message, "danger");
+        }
+      } catch (error) {
+        notify("Failedllets.", "danger");
+      }
+    })();
+  }, []);
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    var data = pledges.map((prop, key) => {
       return {
         ...prop,
+        createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
         amount: prop.amount + "$",
         status:
-          prop.status === 0
-            ? "Pending"
-            : prop.status === 1
-            ? "Approved"
-            : "Reject",
+          prop.status === 0 ? (
+            <span style={{ color: "yello" }}>
+              <span>Pending</span>
+              <span style={{ marginLeft: 14 }}>
+                <i className="tim-icons icon-simple-delete" />
+              </span>
+            </span>
+          ) : prop.status === 1 ? (
+            <span style={{ color: "green" }}>
+              <span>Approved</span>
+              <span style={{ marginLeft: 5 }}>
+                <i className="tim-icons icon-check-2" />
+              </span>
+            </span>
+          ) : (
+            <span style={{ color: "red" }}>
+              <span>Rejected</span>
+              <span style={{ marginLeft: 10 }}>
+                <i className="tim-icons icon-simple-remove" />
+              </span>
+            </span>
+          ),
         actions: (
           <div className="actions-right">
-            {/* use this button to add a edit kind of action */}
             <Button
               onClick={() => openModal(prop)}
               color="warning"
@@ -149,7 +233,6 @@ const Pledge = () => {
             >
               <i className="tim-icons icon-pencil" />
             </Button>{" "}
-            {/* use this button to add a edit kind of action */}
             <Button
               onClick={() => openModal1(prop)}
               color="warning"
@@ -162,10 +245,15 @@ const Pledge = () => {
           </div>
         ),
       };
-    })
-  );
+    });
+    setData(data);
+  }, [pledges]);
+
   return (
     <>
+      <div className="rna-container">
+        <NotificationAlert ref={notificationAlertRef} />
+      </div>
       <div className="content">
         <Row>
           <Col xs={12} md={12}>
@@ -179,9 +267,13 @@ const Pledge = () => {
                   filterable
                   resizable={false}
                   columns={[
+                    // {
+                    //   Header: "Project",
+                    //   accessor: "project.name",
+                    // },
                     {
-                      Header: "Project",
-                      accessor: "project.name",
+                      Header: "Investor",
+                      accessor: "investor.fullname",
                     },
                     {
                       Header: "Amount",
@@ -193,11 +285,15 @@ const Pledge = () => {
                     },
                     {
                       Header: "Referrer",
-                      accessor: "referrer.name",
+                      accessor: "referrer.fullname",
                     },
                     {
                       Header: "Status",
                       accessor: "status",
+                    },
+                    {
+                      Header: "CreatedAt",
+                      accessor: "createdAt",
                     },
                     {
                       Header: "Actions",
@@ -217,9 +313,9 @@ const Pledge = () => {
           </Col>
         </Row>
       </div>
-      <Modal modalClassName="modal-black" isOpen={show}>
+      <Modal isOpen={show}>
         <div className="modal-header">
-          <h3>{pledge._id ? "Edit " : "Add "}Pledges</h3>
+          <h4>{pledge._id ? "Edit " : "Add "}Pledges</h4>
           <button
             aria-label="Close"
             className="close"
@@ -233,22 +329,21 @@ const Pledge = () => {
         <div className="modal-body">
           <Form className="form-horizontal">
             <Row>
-              <Label md="3">Project</Label>
+              <Label md="3">Investor</Label>
               <Col md="9">
                 <FormGroup>
-                  <Input
-                    type="text"
-                    style={{ color: "#dcdfe9" }}
-                    value={pledge.project ? pledge.project.name : ""}
-                    onChange={(e) =>
-                      setPledge({
-                        ...pledge,
-                        project: {
-                          ...pledge.project,
-                          name: e.target.value,
-                        },
-                      })
+                  <Select
+                    className="react-select info"
+                    classNamePrefix="react-select"
+                    name="investor"
+                    value={pledge.investor}
+                    onChange={(value) =>
+                      setPledge({ ...pledge, investor: value })
                     }
+                    options={investors.map((one) => ({
+                      value: one._id,
+                      label: one.fullname,
+                    }))}
                   />
                 </FormGroup>
               </Col>
@@ -259,7 +354,7 @@ const Pledge = () => {
                 <FormGroup>
                   <Input
                     type="number"
-                    style={{ color: "#dcdfe9" }}
+                    style={{ color: "rgb(112 114 118)" }}
                     value={pledge.amount}
                     onChange={(e) =>
                       setPledge({ ...pledge, amount: e.target.value })
@@ -274,7 +369,7 @@ const Pledge = () => {
                 <FormGroup>
                   <Input
                     type="text"
-                    style={{ color: "#dcdfe9" }}
+                    style={{ color: "rgb(112 114 118)" }}
                     value={pledge.transaction}
                     onChange={(e) =>
                       setPledge({ ...pledge, transaction: e.target.value })
@@ -283,27 +378,24 @@ const Pledge = () => {
                 </FormGroup>
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               <Label md="3">Referrer</Label>
               <Col md="9">
                 <FormGroup>
                   <Input
                     type="text"
                     style={{ color: "#dcdfe9" }}
-                    value={pledge.referrer ? pledge.referrer.name : ""}
+                    value={pledge.referrer_id}
                     onChange={(e) =>
                       setPledge({
                         ...pledge,
-                        referrer: {
-                          ...pledge.referrer,
-                          name: e.target.value,
-                        },
+                        referrer_id: e.target.value,
                       })
                     }
                   />
                 </FormGroup>
               </Col>
-            </Row>
+            </Row> */}
             <Row className="mt-1 mb-4">
               <Label md="3">Status</Label>
               <Col md="9">
@@ -339,32 +431,32 @@ const Pledge = () => {
                       onChange={() => setPledge({ ...pledge, status: 2 })}
                     />
                     <span className="form-check-sign" />
-                    Reject
+                    Rejected
                   </Label>
                 </FormGroup>
               </Col>
             </Row>
             <Row style={{ float: "right", marginRight: "2px" }}>
-              <Button color="btn1" onClick={() => save(pledge)}>
+              <Button color="btn1 btn-sm" onClick={() => save(pledge)}>
                 {pledge._id ? "Update" : "Save"}
               </Button>
-              <Button color="btn1" onClick={() => closeModal()}>
+              <Button color="btn1 btn-sm" onClick={() => closeModal()}>
                 Cancel
               </Button>
             </Row>
           </Form>
         </div>
       </Modal>
-      <Modal modalClassName="modal-black" isOpen={show1}>
+      <Modal isOpen={show1}>
         <div className="modal-header">
-          <h3>Are you sure you want to delete?</h3>
+          <h4>Are you sure you want to delete?</h4>
         </div>
         <div className="modal-body">
           <Row style={{ float: "right", marginRight: "2px" }}>
-            <Button color="btn1" onClick={() => remove(pledge)}>
+            <Button color="btn1 btn-sm" onClick={() => remove(pledge)}>
               Confirm
             </Button>
-            <Button color="btn1" onClick={() => closeModal1()}>
+            <Button color="btn1 btn-sm" onClick={() => closeModal1()}>
               Cancel
             </Button>
           </Row>
@@ -374,4 +466,10 @@ const Pledge = () => {
   );
 };
 
-export default Pledge;
+// export default Pledge;
+const mapStateToProps = (state) => {
+  const { LoginReducer } = state;
+  return { credential: LoginReducer };
+};
+
+export default connect(mapStateToProps)(Pledge);

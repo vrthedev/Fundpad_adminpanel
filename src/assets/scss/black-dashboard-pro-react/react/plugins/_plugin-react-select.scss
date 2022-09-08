@@ -17,7 +17,7 @@ This file was modified entirely by Creative Tim for React-Select v2.0.0
     width: 94%;
     right: 3%;
     border-radius: 12px;
-    border: 0;
+    border: 1px;
     box-shadow: 1px 2px 7px 1px rgba(0, 0, 0, 0.125);
     transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) 0s,
       opacity 0.3s ease 0s, height 0s linear 0.35s;
@@ -112,9 +112,10 @@ This file was modified entirely by Creative Tim for React-Select v2.0.0
     border-collapse: separate;
     display: table;
     width: 100%;
+    border: 1px solid lighten($black, 5%);
     &,
     &:hover {
-      border: 0px solid lighten($black, 5%);
+      border: 1px solid lighten($black, 5%);
       box-shadow: none;
       background-color: transparent;
     }

@@ -1,14 +1,20 @@
 import Login from "views/pages/Login.js";
 import User from "views/pages/User.js";
 import Register from "views/pages/Register.js";
-import Authorization from "views/pages/admin/Authorization";
-import Bots from "views/pages/admin/Bots";
-import Wallets from "views/pages/admin/Wallets";
-import Setting from "views/pages/admin/Setting";
+// import Authorization from "views/pages/admin/Authorization";
+// import Bots from "views/pages/admin/admins";
+// import Wallets from "views/pages/admin/Wallets";
+// import Setting from "views/pages/admin/Setting";
 import Dashboard from "views/Dashboard";
 import Project from "views/Project";
 import ProjectDetail from "views/ProjectDetail";
 import Pledge from "views/Pledge";
+import Profit from "views/Profit";
+import News from "views/News";
+import Faq from "views/Faq";
+import AppUser from "views/AppUser";
+import ProfitDetail from "views/ProfitDetail";
+import AppLogin from "views/Login";
 
 const routes = [
   {
@@ -17,7 +23,15 @@ const routes = [
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
-    layout: "/bot",
+    layout: "/admin",
+  },
+  {
+    path: "/appuser",
+    name: "AppUser",
+    rtlName: "يتعهد",
+    icon: "tim-icons icon-single-02",
+    component: AppUser,
+    layout: "/admin",
   },
   {
     path: "/project",
@@ -25,7 +39,7 @@ const routes = [
     rtlName: "مشروع",
     icon: "tim-icons icon-app",
     component: Project,
-    layout: "/bot",
+    layout: "/admin",
   },
   {
     path: "/projectDetail/:id",
@@ -34,7 +48,7 @@ const routes = [
     mini: "L",
     rtlMini: "هعذا",
     component: ProjectDetail,
-    layout: "/bot",
+    layout: "/admin",
     hidden: true,
   },
   {
@@ -43,7 +57,51 @@ const routes = [
     rtlName: "يتعهد",
     icon: "tim-icons icon-coins",
     component: Pledge,
-    layout: "/bot",
+    layout: "/admin",
+  },
+  {
+    path: "/profitDetail/:id",
+    name: "profitDetail",
+    rtlName: "مشروع",
+    mini: "L",
+    rtlMini: "هعذا",
+    component: ProfitDetail,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/profit",
+    name: "Profit",
+    rtlName: "يتعهد",
+    icon: "tim-icons icon-money-coins",
+    component: Profit,
+    layout: "/admin",
+  },
+  {
+    path: "/news",
+    name: "News",
+    rtlName: "يتعهد",
+    icon: "tim-icons icon-map-big",
+    component: News,
+    layout: "/admin",
+  },
+  {
+    path: "/faq",
+    name: "Faq",
+    rtlName: "يتعهد",
+    icon: "tim-icons icon-puzzle-10",
+    component: Faq,
+    layout: "/admin",
+  },
+  {
+    path: "/login",
+    name: "Login",
+    rtlName: "هعذاتسجيل الدخول",
+    mini: "L",
+    rtlMini: "هعذا",
+    component: AppLogin,
+    layout: "/admin",
+    hidden: true,
   },
   {
     path: "/login",
@@ -71,7 +129,7 @@ const routes = [
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-key-25",
     component: User,
-    layout: "/bot",
+    layout: "/admin",
   },
   // {
   //   collapse: true,
@@ -87,15 +145,15 @@ const routes = [
   //       rtlName: "لوحة القيادة",
   //       mini: "W",
   //       component: Wallets,
-  //       layout: "/bot",
+  //       layout: "/admin",
   //     },
   //     {
-  //       path: "/admin/bots",
+  //       path: "/admin/admins",
   //       name: "Bots",
   //       rtlName: "لوحة القيادة",
   //       mini: "B",
   //       component: Bots,
-  //       layout: "/bot",
+  //       layout: "/admin",
   //     },
   //     {
   //       path: "/admin/autorization",
@@ -103,7 +161,7 @@ const routes = [
   //       rtlName: "لوحة القيادة",
   //       mini: "A",
   //       component: Authorization,
-  //       layout: "/bot",
+  //       layout: "/admin",
   //     },
   //     {
   //       path: "/admin/settings",
@@ -111,7 +169,7 @@ const routes = [
   //       rtlName: "لوحة القيادة",
   //       mini: "S",
   //       component: Setting,
-  //       layout: "/bot",
+  //       layout: "/admin",
   //     },
   //   ],
   // },

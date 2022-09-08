@@ -445,6 +445,17 @@ h6,
   font-weight: 300;
 }
 
+.exp_sp {
+  cursor: pointer;
+  font-size: 20px;
+  color: rgb(255, 255, 255, 0.7)
+}
+.exp_sp:hover {
+  cursor: pointer;
+  font-size: 20px;
+  color: rgba(10, 86, 137, 0.7)
+}
+
 .display-1 {
   font-size: 3.3rem;
   font-weight: 600;
@@ -35700,7 +35711,15 @@ This file was modified entirely by Creative Tim for React-Select v2.0.0
   width: 100%;
 }
 
-.cus_pre_next {
+.react-select .react-select__control,
+.react-select .react-select__control:hover {
+  border: 1px solid #2b3553;
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.react-select .react-select__control,
+.react-select .react-select__control:hover .cus_pre_next {
   color: "#1d8cf8";
 }
 

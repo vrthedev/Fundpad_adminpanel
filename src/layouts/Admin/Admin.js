@@ -34,6 +34,7 @@ import logo from "assets/img/react-logo.png";
 var ps;
 
 const Admin = (props) => {
+  // document.body.classList.toggle("white-content");
   const [activeColor, setActiveColor] = React.useState("blue");
   const [sidebarMini, setSidebarMini] = React.useState(true);
   const [opacity, setOpacity] = React.useState(0);
@@ -96,7 +97,7 @@ const Admin = (props) => {
       if (prop.collapse) {
         return getRoutes(prop.views);
       }
-      if (prop.layout === "/bot") {
+      if (prop.layout === "/admin") {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -195,8 +196,8 @@ const Admin = (props) => {
         />
         <Switch>
           {getRoutes(routes)}
-          {/* <Redirect from="*" to="/bot/nft_bot" /> */}
-          <Redirect from="*" to="/bot/dashboard" />
+          {/* <Redirect from="*" to="/admin/nft_bot" /> */}
+          <Redirect from="*" to="/admin/dashboard" />
         </Switch>
         {
           // we don't want the Footer to be rendered on full screen maps page

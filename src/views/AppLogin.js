@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useHistory } from "react-router-dom";
 import NotificationAlert from "react-notification-alert";
-import "./login.css";
-
+import "./pages/login.css";
 // reactstrap components
 import {
   Button,
@@ -25,14 +24,12 @@ import {
   Label,
 } from "reactstrap";
 
-const Register = () => {
-  const [state, setState] = React.useState({
-    private: "",
-    password: "",
-    passwordConfirm: "",
-  });
+const AppLogin = ({ credential, LoginSuccess, LogOutSuccess }) => {
+  const [state, setState] = React.useState({ public: "", password: "" });
+  const history = useHistory();
   const { apiConfig, ApiCall } = global;
   const notificationAlertRef = React.useRef(null);
+
   const notify = (message, type) => {
     let options = {};
     options = {
@@ -45,44 +42,26 @@ const Register = () => {
     notificationAlertRef.current.notificationAlert(options);
   };
   const submit = async () => {
-    if (!state.private) {
-      notify("Please input private key", "danger");
+    if (!state.public) {
+      notify("Please input public key", "danger");
       return;
-    } else if (!state.password) {
+    }
+    if (!state.password) {
       notify("Please input password", "danger");
       return;
-    } else if (state.password.length < 6) {
-      notify("Password must be at least 6 characters long", "danger");
-      return;
-    } else if (state.password.length > 50) {
-      notify("Password must be at most 50 characters long", "danger");
-      return;
-    } else if (!state.passwordConfirm) {
-      notify("Please check password confirm", "danger");
-      return;
-    } else if (state.password !== state.passwordConfirm) {
-      notify("Password Confirm does not match.", "danger");
-      return;
     }
-    if (!checkTerms) {
-      notify("Please check the agreement", "danger");
-      return;
-    }
-    const payLoad = {
-      private: state.private,
-      password: state.password,
-      bcrypt: state.private,
-      passwordConfirm: state.passwordConfirm,
-    };
     try {
+      const payLoad = {
+        public: state.public,
+        password: state.password,
+      };
       const response = await ApiCall(
-        apiConfig.register.url,
-        apiConfig.register.method,
+        apiConfig.authenticate.url,
+        apiConfig.authenticate.method,
         "",
         payLoad
       );
-      notify(response.data.message, "success");
-      window.location.href = "/auth/login";
+      LoginSuccess(response.data);
     } catch (error) {
       if (error.response) {
         notify(error.response.data.message, "danger");
@@ -93,6 +72,7 @@ const Register = () => {
       } else {
         notify("Something went wrong", "", "danger");
       }
+      LogOutSuccess();
     }
   };
   React.useEffect(() => {
@@ -101,34 +81,12 @@ const Register = () => {
       document.body.classList.toggle("login-page");
     };
   });
-  const [terms, setTerms] = useState("");
-  const [privacy, setPrivacy] = useState("");
-  const [checkTerms, setCheckTerms] = useState(false);
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await ApiCall(
-          apiConfig.read_setting.url,
-          apiConfig.read_setting.method,
-          ""
-        );
-        if (response.status === 200) {
-          response.data.data.map((item, key) => {
-            if (item.key == "terms") {
-              setTerms(item.value);
-            }
-            if (item.key == "privacy") {
-              setPrivacy(item.value);
-            }
-          });
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } catch (error) {
-        notify("Failed", "danger");
-      }
-    })();
-  }, []);
+    if (credential && credential.loginToken) {
+      history.push("/");
+    }
+  }, [credential]);
+
   return (
     <>
       <div className="rna-container">
@@ -170,17 +128,17 @@ const Register = () => {
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
-                        <i className="tim-icons icon-key-25" />
+                        <i className="tim-icons icon-wallet-43" />
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input
-                      placeholder="private key"
-                      type="password"
+                      placeholder="public key"
+                      type="text"
                       onFocus={(e) => setState({ ...state, emailFocus: true })}
                       onBlur={(e) => setState({ ...state, emailFocus: false })}
-                      value={state.private}
+                      value={state.public}
                       onChange={(e) =>
-                        setState({ ...state, private: e.target.value })
+                        setState({ ...state, public: e.target.value })
                       }
                     />
                   </InputGroup>
@@ -206,58 +164,14 @@ const Register = () => {
                       }
                     />
                   </InputGroup>
-                  <InputGroup
-                    className={classnames({
-                      "input-group-focus": state.emailFocus,
-                    })}
-                    style={{ border: "pink 1px solid" }}
-                  >
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="tim-icons icon-key-25" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Confirm password"
-                      type="password"
-                      onFocus={(e) => setState({ ...state, emailFocus: true })}
-                      onBlur={(e) => setState({ ...state, emailFocus: false })}
-                      value={state.passwordConfirm}
-                      onChange={(e) =>
-                        setState({ ...state, passwordConfirm: e.target.value })
-                      }
-                    />
-                  </InputGroup>
-                  <FormGroup check className="mt-3">
-                    <Label check>
-                      <Input
-                        type="checkbox"
-                        checked={checkTerms}
-                        onChange={(e) => setCheckTerms(e.target.checked)}
-                      />
-                      <span
-                        className="form-check-sign"
-                        style={{ color: "lightgray" }}
-                      >
-                        By registering, you agree to our
-                        <a href={terms} target="_blank">
-                          &nbsp;terms of service&nbsp;
-                        </a>
-                        and
-                        <a href={privacy} target="_blank">
-                          &nbsp;privacy policy&nbsp;
-                        </a>
-                      </span>
-                    </Label>
-                  </FormGroup>
                 </CardBody>
                 <CardFooter>
                   <a
-                    href="/auth/login"
+                    href="/auth/register"
                     className="registerA"
                     style={{ color: "white" }}
                   >
-                    Go to login
+                    Go to register
                   </a>
                   <Button
                     block
@@ -270,7 +184,7 @@ const Register = () => {
                       color: "black",
                     }}
                   >
-                    Register
+                    Login
                   </Button>
                 </CardFooter>
               </Card>
@@ -281,4 +195,19 @@ const Register = () => {
     </>
   );
 };
-export default Register;
+
+const mapStateToProps = (state) => {
+  const { LoginReducer } = state;
+  return { credential: LoginReducer };
+};
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators(
+    {
+      LogOutSuccess: global.Actions.LoginAction.LogOutSuccess,
+      LoginSuccess: global.Actions.LoginAction.LoginSuccess,
+    },
+    dispatch
+  );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppLogin);

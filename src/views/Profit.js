@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import classNames from "classnames";
 import {
   Card,
@@ -19,14 +19,13 @@ import {
 } from "reactstrap";
 import Moment from "moment";
 import NotificationAlert from "react-notification-alert";
-import ReactDatetime from "react-datetime";
 import ReactTable from "components/ReactTable/ReactTable.js";
 
-const Project = ({ credential }) => {
-  const [projects, setProjects] = useState([]);
+const Profit = ({ credential }) => {
+  const [profits, setProfits] = useState([]);
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
-  const [project, setProject] = useState({ fund_raised: 0, status: false });
+  const [profit, setProfit] = useState({});
   const { apiConfig, ApiCall } = global;
   const notificationAlertRef = React.useRef(null);
 
@@ -43,41 +42,41 @@ const Project = ({ credential }) => {
   };
 
   const openModal = (data) => {
-    setProject(data);
+    setProfit(data);
     setShow(true);
   };
 
   const closeModal = () => {
-    setProject({ fund_raised: 0, status: false });
+    setProfit({});
     setShow(false);
   };
 
   const openModal1 = (data) => {
-    setProject(data);
+    setProfit(data);
     setShow1(true);
   };
 
   const closeModal1 = () => {
-    setProject({ fund_raised: 0, status: false });
+    setProfit({});
     setShow1(false);
   };
 
   const save = async (pro) => {
     try {
       const response = await ApiCall(
-        apiConfig.pro_upsert.url,
-        apiConfig.pro_upsert.method,
+        apiConfig.profit_add.url,
+        apiConfig.profit_add.method,
         credential.loginToken,
         pro
       );
       if (response.data.result) {
         const response = await ApiCall(
-          apiConfig.pro_get.url,
-          apiConfig.pro_get.method,
+          apiConfig.profit_get.url,
+          apiConfig.profit_get.method,
           credential.loginToken
         );
         if (response.data.result) {
-          setProjects([response.data.data]);
+          setProfits(response.data.data);
         } else {
           notify(response.data.message, "danger");
         }
@@ -87,26 +86,26 @@ const Project = ({ credential }) => {
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
     }
-    setProject({});
+    setProfit({});
     setShow(false);
   };
 
   const remove = async (data) => {
     try {
       const response = await ApiCall(
-        apiConfig.pro_del.url,
-        apiConfig.pro_del.method,
+        apiConfig.profit_del.url,
+        apiConfig.profit_del.method,
         credential.loginToken,
         data
       );
       if (response.data.result) {
         const response = await ApiCall(
-          apiConfig.pro_get.url,
-          apiConfig.pro_get.method,
+          apiConfig.profit_get.url,
+          apiConfig.profit_get.method,
           credential.loginToken
         );
         if (response.data.result) {
-          setProjects([response.data.data]);
+          setProfits(response.data.data);
         } else {
           notify(response.data.message, "danger");
         }
@@ -118,48 +117,20 @@ const Project = ({ credential }) => {
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
-    setProject({ fund_raised: 0, status: false });
+    setProfit({ fund_raised: 0, status: false });
     setShow1(false);
-  };
-
-  const openChange = async (pro) => {
-    try {
-      const response = await ApiCall(
-        apiConfig.pro_upsert.url,
-        apiConfig.pro_upsert.method,
-        credential.loginToken,
-        pro
-      );
-      if (response.data.result) {
-        const response = await ApiCall(
-          apiConfig.pro_get.url,
-          apiConfig.pro_get.method,
-          credential.loginToken
-        );
-        if (response.data.result) {
-          setProjects([response.data.data]);
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } else {
-        notify(response.data.message, "danger");
-      }
-    } catch (error) {
-      notify("Failed in getting all plans.", "danger");
-    }
-    setProject({});
   };
 
   useEffect(() => {
     (async () => {
       try {
         const response = await ApiCall(
-          apiConfig.pro_get.url,
-          apiConfig.pro_get.method,
+          apiConfig.profit_get.url,
+          apiConfig.profit_get.method,
           credential.loginToken
         );
         if (response.data.result) {
-          setProjects([response.data.data]);
+          setProfits(response.data.data);
         } else {
           notify(response.data.message, "danger");
         }
@@ -172,27 +143,16 @@ const Project = ({ credential }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    var data = projects.map((prop, key) => {
+    var data = profits.map((prop, key) => {
       return {
         ...prop,
         createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
-        endDate: Moment(prop.endDate).format("DD/MM/YYYY hh:mm:ss"),
-        status: prop.status ? "Opened" : "",
-        fund_target: prop.fund_target + "$",
-        fund_raised: prop.fund_raised + "$",
-        switches: (
-          <div>
-            <CustomInput
-              type="switch"
-              id="switch-2"
-              checked={prop.isActive}
-              onChange={() => openChange({ ...prop, isActive: !prop.isActive })}
-            />
-          </div>
-        ),
+        percentage: prop.percentage + "%",
+        investor_payouts: prop.investor_payouts + "$",
+        referral_payouts: prop.referral_payouts + "$",
         actions: (
           <div className="actions-right">
-            <Link to={`/admin/projectDetail/${prop._id}`}>
+            <Link to={`/admin/profitDetail/${prop._id}`}>
               <Button
                 color="warning"
                 size="sm"
@@ -202,27 +162,11 @@ const Project = ({ credential }) => {
                 <i class="fa fa-eye" aria-hidden="false"></i>
               </Button>{" "}
             </Link>
-            {/* use this button to add a edit kind of action */}
-            <Button
-              onClick={() => openModal(prop)}
-              color="warning"
-              size="sm"
-              className={classNames("btn-icon btn-link like btn-neutral")}
-              style={{ opacity: 0.7 }}
-            >
-              <i className="tim-icons icon-pencil" />
-            </Button>{" "}
-            {/* use this button to remove the data row */}
             <Button
               onClick={() => openModal1(prop)}
               color="danger"
               size="sm"
-              className={classNames(
-                "btn-icon btn-link like btn-neutral"
-                // , {
-                //   "btn-neutral": key < 5,
-                // }
-              )}
+              className={classNames("btn-icon btn-link like btn-neutral")}
               style={{ opacity: 0.7 }}
             >
               <i className="tim-icons icon-trash-simple" />
@@ -232,7 +176,7 @@ const Project = ({ credential }) => {
       };
     });
     setData(data);
-  }, [projects]);
+  }, [profits]);
 
   return (
     <>
@@ -244,7 +188,7 @@ const Project = ({ credential }) => {
           <Col xs={12} md={12}>
             <Card>
               <CardHeader>
-                <CardTitle tag="h3">Projects</CardTitle>
+                <CardTitle tag="h3">Profits</CardTitle>
               </CardHeader>
               <CardBody>
                 <ReactTable
@@ -257,34 +201,20 @@ const Project = ({ credential }) => {
                       accessor: "name",
                     },
                     {
-                      Header: "Target",
-                      accessor: "fund_target",
+                      Header: "Percentage",
+                      accessor: "percentage",
                     },
                     {
-                      Header: "Raised",
-                      accessor: "fund_raised",
+                      Header: "Investor payouts",
+                      accessor: "investor_payouts",
                     },
                     {
-                      Header: "EndDate",
-                      accessor: "endDate",
+                      Header: "Referral payouts",
+                      accessor: "referral_payouts",
                     },
                     {
                       Header: "CreatedAt",
                       accessor: "createdAt",
-                    },
-                    // {
-                    //   Header: "Pinned",
-                    //   accessor: "pinned",
-                    // },
-                    // {
-                    //   Header: "Status",
-                    //   accessor: "status",
-                    // },
-                    {
-                      Header: "IsActive",
-                      accessor: "switches",
-                      sortable: false,
-                      filterable: false,
                     },
                     {
                       Header: "Actions",
@@ -306,7 +236,7 @@ const Project = ({ credential }) => {
       </div>
       <Modal isOpen={show}>
         <div className="modal-header">
-          <h4>{project._id ? "Edit " : "Add "}Projects</h4>
+          <h4>{profit._id ? "Edit " : "Add "}Profit</h4>
           <button
             aria-label="Close"
             className="close"
@@ -320,59 +250,42 @@ const Project = ({ credential }) => {
         <div className="modal-body">
           <Form className="form-horizontal">
             <Row>
-              <Label md="3">Project Name</Label>
+              <Label md="3">Name</Label>
               <Col md="9">
                 <FormGroup>
                   <Input
                     type="text"
-                    value={project.name}
+                    value={profit.name}
                     onChange={(e) => {
-                      setProject({ ...project, name: e.target.value });
+                      setProfit({ ...profit, name: e.target.value });
                     }}
                   />
                 </FormGroup>
               </Col>
             </Row>
             <Row>
-              <Label md="3">Fund Target</Label>
+              <Label md="3">Percentage</Label>
               <Col md="9">
                 <FormGroup>
                   <Input
                     type="number"
-                    value={project.fund_target}
+                    value={profit.percentage}
                     onChange={(e) => {
-                      setProject({ ...project, fund_target: e.target.value });
+                      setProfit({ ...profit, percentage: e.target.value });
                     }}
                   />
                 </FormGroup>
               </Col>
             </Row>
-            <Row>
-              <Label md="3">End Date</Label>
-              <Col md="9">
-                <FormGroup>
-                  <ReactDatetime
-                    inputProps={{
-                      className: "form-control",
-                      placeholder: "Datetime Picker Here",
-                    }}
-                    onChange={(date) => {
-                      setProject({ ...project, endDate: date._d });
-                    }}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row className="mt-1 mb-4">
-              <Label md="3"></Label>
+            {/* <Row className="mt-1 mb-4">
               <Col md="9">
                 <FormGroup check>
                   <Label check>
                     <Input
                       type="checkbox"
-                      defaultChecked={project.isActive}
+                      defaultChecked={profit.isActive}
                       onChange={() =>
-                        setProject({ ...project, isActive: !project.isActive })
+                        setProfit({ ...profit, isActive: !profit.isActive })
                       }
                     />
                     <span className="form-check-sign" />
@@ -380,10 +293,10 @@ const Project = ({ credential }) => {
                   </Label>
                 </FormGroup>
               </Col>
-            </Row>
+            </Row> */}
             <Row style={{ float: "right", marginRight: "2px" }}>
-              <Button color="btn1 btn-sm" onClick={() => save(project)}>
-                {project._id ? "Update" : "Save"}
+              <Button color="btn1 btn-sm" onClick={() => save(profit)}>
+                {profit._id ? "Update" : "Save"}
               </Button>
               <Button color="btn1 btn-sm" onClick={() => closeModal()}>
                 Cancel
@@ -398,7 +311,7 @@ const Project = ({ credential }) => {
         </div>
         <div className="modal-body">
           <Row style={{ float: "right", marginRight: "2px" }}>
-            <Button color="btn1 btn-sm" onClick={() => remove(project)}>
+            <Button color="btn1 btn-sm" onClick={() => remove(profit)}>
               Confirm
             </Button>
             <Button color="btn1 btn-sm" onClick={() => closeModal1()}>
@@ -416,4 +329,4 @@ const mapStateToProps = (state) => {
   return { credential: LoginReducer };
 };
 
-export default connect(mapStateToProps)(Project);
+export default connect(mapStateToProps)(Profit);

@@ -29,7 +29,7 @@ const FixedPlugin = (props) => {
     }
   };
   const handleActiveMode = () => {
-    setDarkMode(!darkMode);
+    // setDarkMode(!darkMode);
     document.body.classList.toggle("white-content");
   };
   return (

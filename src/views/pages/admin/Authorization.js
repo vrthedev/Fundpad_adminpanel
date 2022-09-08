@@ -157,7 +157,7 @@ const Authorization = (props) => {
           notify(response.data.message, "danger");
         }
       } catch (error) {
-        notify("Failed in getting wallets.", "danger");
+        notify("Failedllets.", "danger");
       }
     })();
     (async () => {

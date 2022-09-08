@@ -187,7 +187,7 @@ function Table({ columns, data, openModal }) {
             /> */}
             <button
               type="button"
-              onClick={() => openModal({ project: {}, referrer: {} })}
+              onClick={() => openModal({})}
               className="-btn"
               style={{
                 width: "60px",
@@ -253,19 +253,19 @@ function Table({ columns, data, openModal }) {
                           <td
                             {...cell.getCellProps()}
                             className="rt-td"
-                            ref={(node) =>
-                              node?.style.setProperty(
-                                "color",
-                                `${
-                                  cell.value === "Pending"
-                                    ? "pink"
-                                    : cell.value === "Approved"
-                                    ? "yellow"
-                                    : "green"
-                                }`,
-                                "important"
-                              )
-                            }
+                            // ref={(node) =>
+                            //   node?.style.setProperty(
+                            //     "color",
+                            //     `${
+                            //       cell.value === "Pending"
+                            //         ? "pink"
+                            //         : cell.value === "Approved"
+                            //         ? "yellow"
+                            //         : "green"
+                            //     }`,
+                            //     "important"
+                            //   )
+                            // }
                           >
                             {cell.render("Cell")}
                           </td>
