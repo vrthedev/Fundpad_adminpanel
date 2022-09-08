@@ -158,7 +158,7 @@ const Register = () => {
                       textAlign: "center",
                     }}
                   >
-                    nft tools
+                  
                   </CardTitle>
                 </CardHeader>
                 <CardBody>

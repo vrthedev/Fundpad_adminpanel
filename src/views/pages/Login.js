@@ -117,7 +117,7 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                       textAlign: "center",
                     }}
                   >
-                    nft tools
+                   
                   </CardTitle>
                 </CardHeader>
                 <CardBody>

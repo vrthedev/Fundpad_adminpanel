@@ -111,7 +111,7 @@ const Admin = (props) => {
     });
   };
   const getActiveRoute = (routes) => {
-    let activeRoute = "Fundpad";
+    let activeRoute = "Legacy";
     for (let i = 0; i < routes.length; i++) {
       if (routes[i].collapse) {
         let collapseActiveRoute = getActiveRoute(routes[i].views);
@@ -181,7 +181,7 @@ const Admin = (props) => {
         activeColor={activeColor}
         logo={{
           outterLink: "",
-          text: "Fundpad",
+          text: "Legacy",
           imgSrc: logo,
         }}
         closeSidebar={closeSidebar}
