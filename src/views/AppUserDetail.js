@@ -350,8 +350,14 @@ const AppUserDetail = ({ credential }) => {
                   </Col> */}
                 </Row>
                 <Row style={{ marginLeft: -10 }}>
-                  <Col md="8">
+                  <Col md="3">
                     <h4>{`Address: ${user.address}`}</h4>
+                  </Col>
+                  <Col md="3">
+                    <h4>{`Referrer: ${getUserName(user.referrer_id)}`}</h4>
+                  </Col>
+                  <Col md="6">
+                    <h4>{`Referral code: ${user.referral_code}`}</h4>
                   </Col>
                 </Row>
                 <div style={{ marginTop: 20 }}>
