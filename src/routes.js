@@ -13,8 +13,11 @@ import Profit from "views/Profit";
 import News from "views/News";
 import Faq from "views/Faq";
 import AppUser from "views/AppUser";
+import AppUserDetail from "views/AppUserDetail";
 import ProfitDetail from "views/ProfitDetail";
 import AppLogin from "views/Login";
+import Notification from "views/Notification";
+import PreAppUser from "views/PreAppUser";
 
 const routes = [
   {
@@ -23,14 +26,6 @@ const routes = [
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
-    layout: "/admin",
-  },
-  {
-    path: "/appuser",
-    name: "AppUser",
-    rtlName: "يتعهد",
-    icon: "tim-icons icon-single-02",
-    component: AppUser,
     layout: "/admin",
   },
   {
@@ -60,6 +55,14 @@ const routes = [
     layout: "/admin",
   },
   {
+    path: "/profit",
+    name: "Profit",
+    rtlName: "يتعهد",
+    icon: "tim-icons icon-money-coins",
+    component: Profit,
+    layout: "/admin",
+  },
+  {
     path: "/profitDetail/:id",
     name: "profitDetail",
     rtlName: "مشروع",
@@ -70,11 +73,37 @@ const routes = [
     hidden: true,
   },
   {
-    path: "/profit",
-    name: "Profit",
+    path: "/appuser",
+    name: "AppUser",
     rtlName: "يتعهد",
-    icon: "tim-icons icon-money-coins",
-    component: Profit,
+    icon: "tim-icons icon-single-02",
+    component: AppUser,
+    layout: "/admin",
+  },
+  {
+    path: "/appuserDetail/:id",
+    name: "AppUserDetail",
+    rtlName: "مشروع",
+    mini: "L",
+    rtlMini: "هعذا",
+    component: AppUserDetail,
+    layout: "/admin",
+    hidden: true,
+  },
+  {
+    path: "/preappuser",
+    name: "Preferred AppUser",
+    rtlName: "يتعهد",
+    icon: "tim-icons icon-user-run",
+    component: PreAppUser,
+    layout: "/admin",
+  },
+  {
+    path: "/notification",
+    name: "Notification",
+    rtlName: "يتعهد",
+    icon: "tim-icons icon-notes",
+    component: Notification,
     layout: "/admin",
   },
   {

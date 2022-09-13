@@ -100,6 +100,14 @@ const apiConfig = {
     url: "/api/appuser/changePassword",
     method: "post",
   },
+  appuser_info: {
+    url: "/api/appuser/info",
+    method: "post",
+  },
+  account_info: {
+    url: "/api/account/info",
+    method: "post",
+  },
   //profit
   profit_get: {
     url: "/api/profit/get",
@@ -154,6 +162,23 @@ const apiConfig = {
   },
   appuser_del: {
     url: "/api/appuser/delete",
+    method: "post",
+  },
+  note_send: {
+    url: "/api/firebase/notification",
+    method: "post",
+  },
+  //pre_app_user
+  preappuser_get: {
+    url: "/api/additional/get",
+    method: "post",
+  },
+  preappuser_upsert: {
+    url: "/api/additional/upsert",
+    method: "post",
+  },
+  preappuser_del: {
+    url: "/api/additional/delete",
     method: "post",
   },
 };

@@ -94,7 +94,7 @@ const Holders = (props) => {
 
           setIsLoading(false);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed in getting data.", "danger");

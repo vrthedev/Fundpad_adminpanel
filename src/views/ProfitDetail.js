@@ -52,22 +52,35 @@ const ProfitDetail = ({ credential }) => {
           if (resp.data.result) {
             const users = response.data.data;
             setProfitInfo({
+              additional_payouts: resp.data.data.additional_payouts.map(
+                (i) => ({
+                  ...i,
+                  user: users.filter((u) => u._id === i.app_user_id)[0] || {},
+                  percentage: i.percentage + "%",
+                  base_amount: i.base_amount + "$",
+                  amount: i.amount + "$",
+                })
+              ),
               investor_payouts: resp.data.data.investor_payouts.map((i) => ({
                 ...i,
                 user: users.filter((u) => u._id === i.app_user_id)[0] || {},
                 percentage: i.percentage + "%",
+                base_amount: i.base_amount + "$",
+                amount: i.amount + "$",
               })),
               referral_payouts: resp.data.data.referral_payouts.map((i) => ({
                 ...i,
                 user: users.filter((u) => u._id === i.app_user_id)[0] || {},
                 percentage: i.percentage + "%",
+                base_amount: i.base_amount + "$",
+                amount: i.amount + "$",
               })),
             });
           } else {
             notify(resp.data.message, "danger");
           }
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -83,7 +96,7 @@ const ProfitDetail = ({ credential }) => {
         if (response.data.result) {
           setProfit(response.data.data.filter((i) => i._id === id)[0] || {});
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -246,18 +259,24 @@ const ProfitDetail = ({ credential }) => {
                 </CardTitle>
               </CardHeader>
               <CardBody>
-                <Row style={{ marginLeft: "40px" }}>
+                <Row style={{ marginLeft: 5 }}>
                   <Col md="8" lg="9" sm="7">
                     <Row style={{ marginTop: 40 }}>
                       <h4>Investor Payouts: </h4>
-                      <h4 style={{ marginLeft: "10px" }}>
+                      <h4 style={{ marginLeft: 5 }}>
                         {profit.investor_payouts}$
                       </h4>
                     </Row>
                     <Row>
                       <h4>Referral Payouts:</h4>
-                      <h4 style={{ marginLeft: "10px" }}>
+                      <h4 style={{ marginLeft: 5 }}>
                         {profit.referral_payouts}$
+                      </h4>
+                    </Row>
+                    <Row>
+                      <h4>Additional Payouts:</h4>
+                      <h4 style={{ marginLeft: 5 }}>
+                        {profit.additional_payouts}$
                       </h4>
                     </Row>
                   </Col>
@@ -326,6 +345,48 @@ const ProfitDetail = ({ credential }) => {
                         },
                         {
                           Header: "Referrer",
+                          accessor: "user.fullname",
+                        },
+                        {
+                          Header: "Base Amount",
+                          accessor: "base_amount",
+                        },
+                        {
+                          Header: "Percentage",
+                          accessor: "percentage",
+                        },
+                        {
+                          Header: "Amount",
+                          accessor: "amount",
+                        },
+                        {
+                          Header: "CreatedAt",
+                          accessor: "createdAt",
+                        },
+                      ]}
+                      defaultPageSize={10}
+                      showPaginationTop
+                      showPaginationBottom={false}
+                      className="-striped -highlight"
+                    />
+                  </div>
+                )}
+                {profitInfo.additional_payouts && (
+                  <div style={{ marginTop: "20px" }}>
+                    <ReactTable
+                      data={profitInfo.additional_payouts}
+                      title="Additional Payouts"
+                      isProfit={true}
+                      isExport={isExport}
+                      filterable
+                      resizable={false}
+                      columns={[
+                        {
+                          Header: "Profit Name",
+                          accessor: "profit_name",
+                        },
+                        {
+                          Header: "Investor",
                           accessor: "user.fullname",
                         },
                         {

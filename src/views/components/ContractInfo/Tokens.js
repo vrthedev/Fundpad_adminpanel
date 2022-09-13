@@ -120,7 +120,7 @@ const Trades = (props) => {
           });
           setIsLoading(false);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed in getting data.", "danger");
@@ -165,7 +165,7 @@ const Trades = (props) => {
           filter: {
             traits: traitFilter,
             rank: rankFilter,
-            token_id: tokenidFilter
+            token_id: tokenidFilter,
           },
           pagination: {
             pagenumber: pagenumber,
@@ -190,7 +190,7 @@ const Trades = (props) => {
           });
           setIsLoading(false);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed in getting data.", "danger");

@@ -85,7 +85,7 @@ const LiveView = (props) => {
         setBookDataIndexes(getSortedIndexes(bookData.timestamps));
         setIsLoading(false);
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting data.", "danger");
@@ -106,7 +106,7 @@ const LiveView = (props) => {
 
         setIsLoading(false);
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting data.", "danger");

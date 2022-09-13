@@ -79,10 +79,10 @@ const Project = ({ credential }) => {
         if (response.data.result) {
           setProjects([response.data.data]);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
@@ -108,13 +108,13 @@ const Project = ({ credential }) => {
         if (response.data.result) {
           setProjects([response.data.data]);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -139,10 +139,10 @@ const Project = ({ credential }) => {
         if (response.data.result) {
           setProjects([response.data.data]);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
@@ -161,7 +161,7 @@ const Project = ({ credential }) => {
         if (response.data.result) {
           setProjects([response.data.data]);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -176,7 +176,7 @@ const Project = ({ credential }) => {
       return {
         ...prop,
         createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
-        endDate: Moment(prop.endDate).format("DD/MM/YYYY hh:mm:ss"),
+        endDate: Moment(prop.endDate).format("DD/MM/YYYY"),
         status: prop.status ? "Opened" : "",
         fund_target: prop.fund_target + "$",
         fund_raised: prop.fund_raised + "$",
@@ -348,6 +348,20 @@ const Project = ({ credential }) => {
               </Col>
             </Row>
             <Row>
+              <Label md="3">Fund Raised</Label>
+              <Col md="9">
+                <FormGroup>
+                  <Input
+                    type="number"
+                    value={project.fund_raised}
+                    onChange={(e) => {
+                      setProject({ ...project, fund_raised: e.target.value });
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
               <Label md="3">End Date</Label>
               <Col md="9">
                 <FormGroup>
@@ -356,6 +370,7 @@ const Project = ({ credential }) => {
                       className: "form-control",
                       placeholder: "Datetime Picker Here",
                     }}
+                    value={{ _d: project.endDate }}
                     onChange={(date) => {
                       setProject({ ...project, endDate: date._d });
                     }}

@@ -35,8 +35,25 @@ const ProjectDetail = ({ credential }) => {
   const [users, setUsers] = useState([]);
   const [investors, setInvestors] = useState([]);
   const [isExport, setIsExport] = useState(true);
+  const [data, setData] = useState({});
 
   useEffect(() => {
+    (async () => {
+      try {
+        const response = await ApiCall(
+          apiConfig.dashboard.url,
+          apiConfig.dashboard.method,
+          credential.loginToken
+        );
+        if (response.data.result) {
+          setData(response.data.data);
+        } else {
+          notify(response.data.data, "danger");
+        }
+      } catch (error) {
+        notify("Failedllets.", "danger");
+      }
+    })();
     (async () => {
       try {
         const response = await ApiCall(
@@ -47,7 +64,7 @@ const ProjectDetail = ({ credential }) => {
         if (response.data.result) {
           setProject(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -76,6 +93,34 @@ const ProjectDetail = ({ credential }) => {
                 const refs = invests.filter((r) => p.referrer_id === r._id);
                 return {
                   ...p,
+                  status: p.transaction ? (
+                    <span style={{ color: "green" }}>Received</span>
+                  ) : (
+                    <span style={{ color: "red" }}>Pledged</span>
+                  ),
+                  approved:
+                    p.status === 0 ? (
+                      <span style={{ color: "yello" }}>
+                        <span>Pending</span>
+                        <span style={{ marginLeft: 14 }}>
+                          <i className="tim-icons icon-simple-delete" />
+                        </span>
+                      </span>
+                    ) : p.status === 1 ? (
+                      <span style={{ color: "green" }}>
+                        <span>Approved</span>
+                        <span style={{ marginLeft: 5 }}>
+                          <i className="tim-icons icon-check-2" />
+                        </span>
+                      </span>
+                    ) : (
+                      <span style={{ color: "red" }}>
+                        <span>Rejected</span>
+                        <span style={{ marginLeft: 10 }}>
+                          <i className="tim-icons icon-simple-remove" />
+                        </span>
+                      </span>
+                    ),
                   investor: invs.length > 0 ? invs[0] : {},
                   referrer: refs.length > 0 ? refs[0] : {},
                   amount: p.amount + "$",
@@ -84,10 +129,10 @@ const ProjectDetail = ({ credential }) => {
               })
             );
           } else {
-            notify(response.data.message, "danger");
+            notify(response.data.data, "danger");
           }
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -111,7 +156,7 @@ const ProjectDetail = ({ credential }) => {
             })
           );
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -273,23 +318,25 @@ const ProjectDetail = ({ credential }) => {
                 </CardTitle>
               </CardHeader>
               <CardBody>
-                <Row style={{ marginLeft: "40px" }}>
+                <Row style={{ marginLeft: 0 }}>
                   <Col md="8" lg="9" sm="7">
                     <Row>
-                      <h4>Target Fund: </h4>
-                      <h4 style={{ marginLeft: "10px" }}>
-                        {project.fund_target}$
-                      </h4>
+                      <h4>{`Target Fund: ${project.fund_target} $`} </h4>
                     </Row>
                     <Row>
-                      <h4>Raised Fund: </h4>
-                      <h4 style={{ marginLeft: "10px" }}>
-                        {project.fund_raised}$
-                      </h4>
+                      <h4>{`Raised Fund: ${project.fund_raised} $`} </h4>
                     </Row>
                     <Row>
-                      <h4>Number of pledges:</h4>
-                      <h4 style={{ marginLeft: "10px" }}>{pledges.length}</h4>
+                      <h4>{`Pledges Number: ${data.pledges_num}`}</h4>
+                    </Row>
+                    <Row>
+                      <h4>{`Pledges Total: ${data.pledges_total} $`}</h4>
+                    </Row>
+                    <Row>
+                      <h4>{`Received Number: ${data.received_num}`}</h4>
+                    </Row>
+                    <Row>
+                      <h4>{`Received Total: ${data.received_total} $`}</h4>
                     </Row>
                   </Col>
                   <Col md="4" lg="3" sm="5">
@@ -317,6 +364,18 @@ const ProjectDetail = ({ credential }) => {
                       {
                         Header: "Amount",
                         accessor: "amount",
+                      },
+                      {
+                        Header: "Transaction",
+                        accessor: "transaction",
+                      },
+                      {
+                        Header: "Status",
+                        accessor: "status",
+                      },
+                      {
+                        Header: "Approved",
+                        accessor: "approved",
                       },
                       {
                         Header: "Date",

@@ -128,7 +128,7 @@ const Trades = (props) => {
           });
           setIsLoading(false);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed in getting data.", "danger");
@@ -153,7 +153,7 @@ const Trades = (props) => {
       if (new Date(item.tradeAt).getTime() > gtTime)
         chartdata.push([item.tradeAt, item.price]);
     });
-    console.log('chartdata', chartdata)
+    console.log("chartdata", chartdata);
     setSeries([
       {
         name: "Trades",
@@ -162,9 +162,8 @@ const Trades = (props) => {
     ]);
   }, [data, timeframe]);
 
-
   const handleChangeTimeFrame = (timeframe) => {
-    console.log('timeframe', timeframe)
+    console.log("timeframe", timeframe);
     setTimeFrame(timeframe);
   };
   return (

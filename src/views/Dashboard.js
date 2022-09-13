@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Pie } from "react-chartjs-2";
 import NotificationAlert from "react-notification-alert";
 import {
   Card,
@@ -97,7 +97,7 @@ const Dashboard = ({ credential }) => {
         if (response.data.result) {
           setData(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -113,7 +113,7 @@ const Dashboard = ({ credential }) => {
         if (response.data.result) {
           setProfits(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -317,6 +317,67 @@ const Dashboard = ({ credential }) => {
     },
   };
 
+  const chartData = {
+    data: {
+      labels: ["Raised fund", ""],
+      datasets: [
+        {
+          label: "Emails",
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          backgroundColor: ["#2a84e9", "#c7bfbf"],
+          borderWidth: 0,
+          data: [data.fund_raised, data.fund_target - data.fund_raised],
+        },
+      ],
+    },
+    options: {
+      cutoutPercentage: 70,
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "#f5f5f5",
+        titleFontColor: "#333",
+        bodyFontColor: "#666",
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest",
+      },
+      scales: {
+        yAxes: [
+          {
+            display: 0,
+            ticks: {
+              display: false,
+            },
+            gridLines: {
+              drawBorder: false,
+              zeroLineColor: "transparent",
+              color: "rgba(255,255,255,0.05)",
+            },
+          },
+        ],
+        xAxes: [
+          {
+            display: 0,
+            barPercentage: 1.6,
+            gridLines: {
+              drawBorder: false,
+              color: "rgba(255,255,255,0.1)",
+              zeroLineColor: "transparent",
+            },
+            ticks: {
+              display: false,
+            },
+          },
+        ],
+      },
+    },
+  };
+
   return (
     <>
       <div className="rna-container">
@@ -324,105 +385,195 @@ const Dashboard = ({ credential }) => {
       </div>
       <div className="content">
         <Row>
-          <Col lg="3" md="6">
-            <Card className="card-stats">
-              <CardBody>
-                <Row>
-                  <Col xs="5">
-                    <div className="info-icon text-center icon-success">
-                      <i className="tim-icons icon-single-02" />
+          <Col lg="8">
+            <Row>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-success">
+                          <i className="tim-icons icon-single-02" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">App Users</p>
+                          <CardTitle tag="h3">{data.app_users}</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="tim-icons icon-single-02" /> App Users
                     </div>
-                  </Col>
-                  <Col xs="7">
-                    <div className="numbers">
-                      <p className="card-category">App Users</p>
-                      <CardTitle tag="h3">{data.app_users}</CardTitle>
+                  </CardFooter>
+                </Card>
+              </Col>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-warning">
+                          <i className="tim-icons icon-app" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">Active Users</p>
+                          <CardTitle tag="h3">{data.active_users}</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="tim-icons icon-app" /> Active Users
                     </div>
-                  </Col>
-                </Row>
-              </CardBody>
-              <CardFooter>
-                <hr />
-                <div className="stats">
-                  <i className="tim-icons icon-single-02" /> Contributors
-                </div>
-              </CardFooter>
-            </Card>
-          </Col>
-          <Col lg="3" md="6">
-            <Card className="card-stats">
-              <CardBody>
-                <Row>
-                  <Col xs="5">
-                    <div className="info-icon text-center icon-warning">
-                      <i className="tim-icons icon-app" />
+                  </CardFooter>
+                </Card>
+              </Col>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-primary">
+                          <i className="tim-icons icon-coins" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">Pledges Number</p>
+                          <CardTitle tag="h3">{data.pledges_num}</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="tim-icons icon-coins" /> Pledges Number
                     </div>
-                  </Col>
-                  <Col xs="7">
-                    <div className="numbers">
-                      <p className="card-category">Projects</p>
-                      <CardTitle tag="h3">{data.projects || ""}</CardTitle>
+                  </CardFooter>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-danger">
+                          <i className="tim-icons icon-money-coins" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">Pledges Total</p>
+                          <CardTitle tag="h3">{data.pledges_total}$</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="tim-icons icon-money-coins" /> Pledges Total
                     </div>
-                  </Col>
-                </Row>
-              </CardBody>
-              <CardFooter>
-                <hr />
-                <div className="stats">
-                  <i className="tim-icons icon-app" /> Projects
-                </div>
-              </CardFooter>
-            </Card>
-          </Col>
-          <Col lg="3" md="6">
-            <Card className="card-stats">
-              <CardBody>
-                <Row>
-                  <Col xs="5">
-                    <div className="info-icon text-center icon-primary">
-                      <i className="tim-icons icon-coins" />
+                  </CardFooter>
+                </Card>
+              </Col>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-danger">
+                          <i className="tim-icons icon-money-coins" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">Received Number</p>
+                          <CardTitle tag="h3">{data.received_num}</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="tim-icons icon-money-coins" /> Received
+                      Number
                     </div>
-                  </Col>
-                  <Col xs="7">
-                    <div className="numbers">
-                      <p className="card-category">Pledges</p>
-                      <CardTitle tag="h3">{data.pledges || ""}</CardTitle>
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-              <CardFooter>
-                <hr />
-                <div className="stats">
-                  <i className="tim-icons icon-coins" /> Pledges
-                </div>
-              </CardFooter>
-            </Card>
-          </Col>
-          <Col lg="3" md="6">
-            <Card className="card-stats">
-              <CardBody>
-                <Row>
-                  <Col xs="5">
-                    <div className="info-icon text-center icon-danger">
+                  </CardFooter>
+                </Card>
+              </Col>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-danger">
+                          <i className="tim-icons icon-money-coins" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">Received Total</p>
+                          <CardTitle tag="h3">{data.received_total}$</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
                       <i className="tim-icons icon-money-coins" />
+                      Received Total
                     </div>
-                  </Col>
-                  <Col xs="7">
-                    <div className="numbers">
-                      <p className="card-category">Fund raised</p>
-                      <CardTitle tag="h3">{data.total_fund_raised}$</CardTitle>
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-              <CardFooter>
-                <hr />
-                <div className="stats">
-                  <i className="tim-icons icon-money-coins" /> Total fund raised
-                </div>
-              </CardFooter>
-            </Card>
+                  </CardFooter>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
+          <Col lg="4" style={{ textAlign: "center" }}>
+            <div className="chart-area" style={{ marginTop: 20 }}>
+              <Pie data={chartData.data} options={chartData.options} />
+            </div>
+            {/* <div style={{ transform: "translate(0, 10%)" }}>
+              <span
+                style={{
+                  fontSize: 48,
+                  color: "#2a84e9",
+                }}
+              >
+                {Math.round((data.fund_raised / data.fund_target) * 100)}%
+              </span>
+            </div> */}
+            <div style={{ marginTop: 10 }}>
+              <h4
+                style={{ color: "#808080" }}
+              >{`Target Fund: ${data.fund_target} $`}</h4>
+            </div>
+            <div style={{ marginTop: 0 }}>
+              <h4
+                style={{ color: "#808080" }}
+              >{`Raised Fund: ${data.fund_raised} $`}</h4>
+            </div>
+            <div style={{ marginTop: 0 }}>
+              <h4
+                style={{ color: "#808080" }}
+              >{`Raised Percentage: ${Math.round(
+                (data.fund_raised / data.fund_target) * 100
+              )} %`}</h4>
+            </div>
           </Col>
           <Col lg="4">
             <Card className="card-chart">

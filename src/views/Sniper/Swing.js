@@ -5,7 +5,7 @@ import {
   Button,
   ButtonGroup,
   Card,
-  CardHeader, 
+  CardHeader,
   CardBody,
   CardTitle,
   FormGroup,
@@ -30,45 +30,52 @@ import NotificationAlert from "react-notification-alert";
 import snip_image from "assets/img/sniper1.jpg";
 const Swing = (props) => {
   //necessary functions import
-  const {apiConfig, ApiCall} = global;
+  const { apiConfig, ApiCall } = global;
   const [socket, setSocket] = useState("");
   const notificationAlertRef = React.useRef(null);
-  const showNotify = async (title, text, type = "success", place = 'tr', autoDismiss = 5) => {
+  const showNotify = async (
+    title,
+    text,
+    type = "success",
+    place = "tr",
+    autoDismiss = 5
+  ) => {
     const options = {
       place: place,
       message: (
-        <div><div>{title}</div><div>{text}</div></div>
+        <div>
+          <div>{title}</div>
+          <div>{text}</div>
+        </div>
       ),
       type: type,
       icon: "tim-icons icon-bell-55",
       autoDismiss: autoDismiss,
     };
     notificationAlertRef.current.notificationAlert(options);
-  }
+  };
   //setting modal
   const [modalAdd, setModalAdd] = useState(false);
   const [addData, setAddData] = useState({
     addr: "",
-    min:3,
-    max:5,
-    interval:1800,
-    slippage:10,
+    min: 3,
+    max: 5,
+    interval: 1800,
+    slippage: 10,
   });
   const toggleModalAdd = () => {
-    setAddData(
-      {
-        addr: "",
-        min:3,
-        max:5,
-        interval:1800,
-        slippage:10,
-      }
-    );
+    setAddData({
+      addr: "",
+      min: 3,
+      max: 5,
+      interval: 1800,
+      slippage: 10,
+    });
     setModalAdd(!modalAdd);
   };
   const closeModal = () => {
     setModalAdd(false);
-  }
+  };
   const addHandler = async () => {
     try {
       const response = await ApiCall(
@@ -78,19 +85,17 @@ const Swing = (props) => {
         addData
       );
       closeModal();
-      showNotify(response.data.message,'','success');
+      showNotify(response.data.data, "", "success");
       setLogData(response.data.data);
     } catch (error) {
       if (error.response) {
-        showNotify(error.response.data.message,'','danger');
-      } 
-      else if (error.request) {
+        showNotify(error.response.data.data, "", "danger");
+      } else if (error.request) {
         // client never received a response, or request never left
-        showNotify("Request failed",'','danger');
+        showNotify("Request failed", "", "danger");
         // console.log(error.request)
-      }
-      else {
-        showNotify("Something went wrong",'','danger');
+      } else {
+        showNotify("Something went wrong", "", "danger");
       }
     }
   };
@@ -100,20 +105,18 @@ const Swing = (props) => {
         apiConfig.swing_del.url,
         apiConfig.swing_del.method,
         props.credential.loginToken,
-        {_id:_id}
+        { _id: _id }
       );
       if (response.data.data) setLogData(response.data.data);
     } catch (error) {
       if (error.response) {
-        showNotify(error.response.data.message,'','danger');
-      } 
-      else if (error.request) {
+        showNotify(error.response.data.data, "", "danger");
+      } else if (error.request) {
         // client never received a response, or request never left
-        showNotify("Request failed",'','danger');
+        showNotify("Request failed", "", "danger");
         // console.log(error.request)
-      }
-      else {
-        showNotify("Something went wrong",'','danger');
+      } else {
+        showNotify("Something went wrong", "", "danger");
       }
     }
   };
@@ -134,7 +137,7 @@ const Swing = (props) => {
       setSocket(io(apiConfig.endPoint));
     }
     //read settings
-    async function readLog(){
+    async function readLog() {
       try {
         const response = await ApiCall(
           apiConfig.swing_read.url,
@@ -157,7 +160,7 @@ const Swing = (props) => {
         // when connection started
         console.log("connect");
         socket.on("swing:one:logStatus", (data) => {
-          setLogData(data.filter(x=>x.public === publicKey));
+          setLogData(data.filter((x) => x.public === publicKey));
         });
       });
     }
@@ -176,7 +179,9 @@ const Swing = (props) => {
           <Col xs={12} md={12}>
             <Card>
               <CardHeader>
-                <Button className="btn1" onClick={() => setModalAdd(true)}>Add swing</Button>
+                <Button className="btn1" onClick={() => setModalAdd(true)}>
+                  Add swing
+                </Button>
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -192,30 +197,49 @@ const Swing = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {
-                      logData.map((item,key)=>(
-                        <tr key={key}>
-                          <td key={1} className="text-center">
-                            <div className="photo">
-                              <img
-                                alt="..."
-                                src={require("assets/img/bitcoin.png").default}
-                              />
-                            </div>
-                          </td>
-                          <td key={2}><a href={`${item.ex_url}/${item.presaleAddr}`} target="_blank">{item.addr}</a></td>
-                          <td key={3} className="text-left">{item.min}</td>
-                          <td key={4} className="text-left">{item.max}</td>
-                          <td key={5} className="text-left">{item.interval}</td>
-                          <td key={6} className="text-left">{item.count}</td>
-                          <td key={8} className="text-left">
-                            <Button className="btn-link" color="danger" size="sm"  onClick={() => del(item._id)} title="Delete">
-                              <i className="tim-icons icon-simple-remove" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))
-                    }
+                    {logData.map((item, key) => (
+                      <tr key={key}>
+                        <td key={1} className="text-center">
+                          <div className="photo">
+                            <img
+                              alt="..."
+                              src={require("assets/img/bitcoin.png").default}
+                            />
+                          </div>
+                        </td>
+                        <td key={2}>
+                          <a
+                            href={`${item.ex_url}/${item.presaleAddr}`}
+                            target="_blank"
+                          >
+                            {item.addr}
+                          </a>
+                        </td>
+                        <td key={3} className="text-left">
+                          {item.min}
+                        </td>
+                        <td key={4} className="text-left">
+                          {item.max}
+                        </td>
+                        <td key={5} className="text-left">
+                          {item.interval}
+                        </td>
+                        <td key={6} className="text-left">
+                          {item.count}
+                        </td>
+                        <td key={8} className="text-left">
+                          <Button
+                            className="btn-link"
+                            color="danger"
+                            size="sm"
+                            onClick={() => del(item._id)}
+                            title="Delete"
+                          >
+                            <i className="tim-icons icon-simple-remove" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </CardBody>
@@ -268,18 +292,17 @@ const Swing = (props) => {
                   </Col>
                   <Col md={6}>
                     <FormGroup>
-                        <label>Maximum(bnb)</label>
-                        <Input
-                          type="number"
-                          value={addData.max}
-                          onChange={(e) =>
-                            setAddData({ ...addData, max: e.target.value })
-                          }
-                        />
+                      <label>Maximum(bnb)</label>
+                      <Input
+                        type="number"
+                        value={addData.max}
+                        onChange={(e) =>
+                          setAddData({ ...addData, max: e.target.value })
+                        }
+                      />
                     </FormGroup>
                   </Col>
                 </Row>
-
               </Col>
               {/* <Col className="pr-md-1" md="12">
                 <FormGroup>

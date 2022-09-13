@@ -64,7 +64,7 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
       LoginSuccess(response.data);
     } catch (error) {
       if (error.response) {
-        notify(error.response.data.message, "danger");
+        notify(error.response.data.data, "danger");
       } else if (error.request) {
         // client never received a response, or request never left
         notify("Request failed", "", "danger");
@@ -86,7 +86,6 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
       history.push("/");
     }
   }, [credential]);
-
 
   return (
     <>
@@ -116,9 +115,7 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                       paddingTop: "0px",
                       textAlign: "center",
                     }}
-                  >
-                   
-                  </CardTitle>
+                  ></CardTitle>
                 </CardHeader>
                 <CardBody>
                   <InputGroup
@@ -164,7 +161,7 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                         setState({ ...state, password: e.target.value })
                       }
                     />
-                  </InputGroup>                
+                  </InputGroup>
                 </CardBody>
                 <CardFooter>
                   <a

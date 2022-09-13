@@ -87,7 +87,7 @@ function Table({ columns, data, isProfit, title, isExport }) {
     <>
       <div className="ReactTable -striped -highlight">
         <div className="pagination-top">
-          <span style={{ float: "left", marginLeft: 40 }}>
+          <span style={{ float: "left", marginLeft: 5 }}>
             <h4>{title}</h4>
           </span>
           {isExport && (

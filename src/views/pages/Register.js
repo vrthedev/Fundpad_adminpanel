@@ -81,11 +81,11 @@ const Register = () => {
         "",
         payLoad
       );
-      notify(response.data.message, "success");
+      notify(response.data.data, "success");
       window.location.href = "/auth/login";
     } catch (error) {
       if (error.response) {
-        notify(error.response.data.message, "danger");
+        notify(error.response.data.data, "danger");
       } else if (error.request) {
         // client never received a response, or request never left
         notify("Request failed", "", "danger");
@@ -122,7 +122,7 @@ const Register = () => {
             }
           });
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed", "danger");
@@ -157,9 +157,7 @@ const Register = () => {
                       paddingTop: "0px",
                       textAlign: "center",
                     }}
-                  >
-                  
-                  </CardTitle>
+                  ></CardTitle>
                 </CardHeader>
                 <CardBody>
                   <InputGroup

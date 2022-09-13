@@ -89,7 +89,7 @@ const Setting = (props) => {
       );
       setSettings(response.data.data);
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -107,7 +107,7 @@ const Setting = (props) => {
         if (response.status === 200) {
           setSettings(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed", "danger");

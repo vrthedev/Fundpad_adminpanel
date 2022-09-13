@@ -96,10 +96,10 @@ const Pledge = ({ credential }) => {
             })
           );
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
@@ -135,13 +135,13 @@ const Pledge = ({ credential }) => {
             })
           );
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -180,10 +180,10 @@ const Pledge = ({ credential }) => {
               })
             );
           } else {
-            notify(response.data.message, "danger");
+            notify(response.data.data, "danger");
           }
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -199,7 +199,12 @@ const Pledge = ({ credential }) => {
         ...prop,
         createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
         amount: prop.amount + "$",
-        status:
+        status: prop.transaction ? (
+          <span style={{ color: "green" }}>Received</span>
+        ) : (
+          <span style={{ color: "red" }}>Pledged</span>
+        ),
+        approved:
           prop.status === 0 ? (
             <span style={{ color: "yello" }}>
               <span>Pending</span>
@@ -276,6 +281,10 @@ const Pledge = ({ credential }) => {
                       accessor: "investor.fullname",
                     },
                     {
+                      Header: "Referrer",
+                      accessor: "referrer.fullname",
+                    },
+                    {
                       Header: "Amount",
                       accessor: "amount",
                     },
@@ -284,12 +293,12 @@ const Pledge = ({ credential }) => {
                       accessor: "transaction",
                     },
                     {
-                      Header: "Referrer",
-                      accessor: "referrer.fullname",
-                    },
-                    {
                       Header: "Status",
                       accessor: "status",
+                    },
+                    {
+                      Header: "Approved",
+                      accessor: "approved",
                     },
                     {
                       Header: "CreatedAt",

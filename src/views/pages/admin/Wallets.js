@@ -53,7 +53,7 @@ const Wallets = (props) => {
         data
       );
       if (response.status === 200) {
-        notify(response.data.message, "success");
+        notify(response.data.data, "success");
         setData(response.data.data);
       } else {
         notify(response.data.error, "danger");
@@ -74,7 +74,7 @@ const Wallets = (props) => {
         payLoad
       );
       if (response.status === 200) {
-        notify(response.data.message, "success");
+        notify(response.data.data, "success");
         setData(response.data.data);
       } else {
         notify(response.data.error, "danger");
@@ -109,7 +109,7 @@ const Wallets = (props) => {
       notify("done", "success");
       setBlockAT(value);
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -129,7 +129,7 @@ const Wallets = (props) => {
       notify("done", "success");
       setBlockLogin(value);
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -149,7 +149,7 @@ const Wallets = (props) => {
             return ele;
           });
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -172,7 +172,7 @@ const Wallets = (props) => {
             }
           });
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed", "danger");

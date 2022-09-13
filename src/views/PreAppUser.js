@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import classNames from "classnames";
 import {
   Card,
@@ -17,16 +18,18 @@ import {
   CustomInput,
 } from "reactstrap";
 import Moment from "moment";
+import Select from "react-select";
 import NotificationAlert from "react-notification-alert";
 import ReactTable from "components/ReactTable/ReactTable.js";
 
-const News = ({ credential }) => {
-  const [news, setNews] = useState([]);
-  const [show, setShow] = useState(false);
-  const [show1, setShow1] = useState(false);
-  const [newsOne, setNewsOne] = useState({});
+const AppUser = ({ credential }) => {
   const { apiConfig, ApiCall } = global;
   const notificationAlertRef = React.useRef(null);
+  const [users, setUsers] = useState([]);
+  const [preusers, setPreusers] = useState([]);
+  const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
+  const [user, setUser] = useState({});
 
   const notify = (message, type) => {
     let options = {};
@@ -41,43 +44,45 @@ const News = ({ credential }) => {
   };
 
   const openModal = (data) => {
-    setNewsOne(data);
+    console.log(data, "--------data in open");
+    setUser(data);
     setShow(true);
   };
 
   const closeModal = () => {
-    setNewsOne({});
+    setUser({});
     setShow(false);
   };
 
   const openModal1 = (data) => {
-    setNewsOne(data);
+    setUser(data);
     setShow1(true);
   };
 
   const closeModal1 = () => {
-    setNewsOne({});
+    setUser({});
     setShow1(false);
   };
 
   const save = async (pro) => {
+    pro = { ...pro, app_user_id: pro.app_user_id.value };
     try {
       const response = await ApiCall(
-        apiConfig.news_upsert.url,
-        apiConfig.news_upsert.method,
+        apiConfig.preappuser_upsert.url,
+        apiConfig.preappuser_upsert.method,
         credential.loginToken,
         pro
       );
       if (response.data.result) {
-        const response = await ApiCall(
-          apiConfig.news_get.url,
-          apiConfig.news_get.method,
+        const resp = await ApiCall(
+          apiConfig.preappuser_get.url,
+          apiConfig.preappuser_get.method,
           credential.loginToken
         );
-        if (response.data.result) {
-          setNews(response.data.data);
+        if (resp.data.result) {
+          setPreusers(resp.data.data);
         } else {
-          notify(response.data.data, "danger");
+          notify(resp.data.message, "danger");
         }
       } else {
         notify(response.data.data, "danger");
@@ -85,28 +90,28 @@ const News = ({ credential }) => {
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
     }
-    setNewsOne({});
+    setUser({});
     setShow(false);
   };
 
   const remove = async (data) => {
     try {
       const response = await ApiCall(
-        apiConfig.news_del.url,
-        apiConfig.news_del.method,
+        apiConfig.preappuser_del.url,
+        apiConfig.preappuser_del.method,
         credential.loginToken,
         data
       );
       if (response.data.result) {
-        const response = await ApiCall(
-          apiConfig.news_get.url,
-          apiConfig.news_get.method,
+        const resp = await ApiCall(
+          apiConfig.preappuser_get.url,
+          apiConfig.preappuser_get.method,
           credential.loginToken
         );
-        if (response.data.result) {
-          setNews(response.data.data);
+        if (resp.data.result) {
+          setPreusers(resp.data.data);
         } else {
-          notify(response.data.data, "danger");
+          notify(resp.data.data, "danger");
         }
       } else {
         notify(response.data.data, "danger");
@@ -116,20 +121,52 @@ const News = ({ credential }) => {
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
-    setNewsOne({});
+    setUser({});
     setShow1(false);
+  };
+
+  const getUserName = (_id) => {
+    if (users.length === 0 || !users) return "";
+    const tmp = users.filter((u) => u._id === _id);
+    if (!tmp || tmp.length === 0) return "";
+    return tmp[0].fullname || "";
+  };
+
+  const getUser = (_id) => {
+    if (users.length === 0 || !users) return {};
+    const tmp = users.filter((u) => u._id === _id);
+    if (!tmp || tmp.length === 0) return {};
+    return { value: tmp[0]._id, label: tmp[0].fullname };
   };
 
   useEffect(() => {
     (async () => {
       try {
         const response = await ApiCall(
-          apiConfig.news_get.url,
-          apiConfig.news_get.method,
+          apiConfig.appuser_get.url,
+          apiConfig.appuser_get.method,
           credential.loginToken
         );
         if (response.data.result) {
-          setNews(response.data.data);
+          setUsers(response.data.data);
+          console.log(response.data.data, "------users");
+        } else {
+          notify(response.data.data, "danger");
+        }
+      } catch (error) {
+        notify("Failedllets.", "danger");
+      }
+    })();
+    (async () => {
+      try {
+        const response = await ApiCall(
+          apiConfig.preappuser_get.url,
+          apiConfig.preappuser_get.method,
+          credential.loginToken
+        );
+        if (response.data.result) {
+          setPreusers(response.data.data);
+          console.log(preusers, "------preusers");
         } else {
           notify(response.data.data, "danger");
         }
@@ -139,39 +176,37 @@ const News = ({ credential }) => {
     })();
   }, []);
 
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    var data = news.map((prop, key) => {
-      return {
-        ...prop,
-        createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
-        actions: (
-          <div className="actions-right">
-            <Button
-              onClick={() => openModal(prop)}
-              color="warning"
-              size="sm"
-              className={classNames("btn-icon btn-link like btn-neutral")}
-              style={{ opacity: 0.7 }}
-            >
-              <i className="tim-icons icon-pencil" />
-            </Button>{" "}
-            <Button
-              onClick={() => openModal1(prop)}
-              color="danger"
-              size="sm"
-              className={classNames("btn-icon btn-link like btn-neutral")}
-              style={{ opacity: 0.7 }}
-            >
-              <i className="tim-icons icon-trash-simple" />
-            </Button>{" "}
-          </div>
-        ),
-      };
-    });
-    setData(data);
-  }, [news]);
+  let data = preusers.map((prop, key) => ({
+    ...prop,
+    app_user_id: getUser(prop.app_user_id),
+    username: getUserName(prop.app_user_id),
+    percentage: prop.percentage + "%",
+    createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
+    actions: (
+      <div className="actions-right">
+        <Button
+          onClick={() =>
+            openModal({ ...prop, app_user_id: getUser(prop.app_user_id) })
+          }
+          color="warning"
+          size="sm"
+          className={classNames("btn-icon btn-link like btn-neutral")}
+          style={{ opacity: 0.7 }}
+        >
+          <i className="tim-icons icon-pencil" />
+        </Button>{" "}
+        <Button
+          onClick={() => openModal1(prop)}
+          color="danger"
+          size="sm"
+          className={classNames("btn-icon btn-link like btn-neutral")}
+          style={{ opacity: 0.7 }}
+        >
+          <i className="tim-icons icon-trash-simple" />
+        </Button>{" "}
+      </div>
+    ),
+  }));
 
   return (
     <>
@@ -183,7 +218,7 @@ const News = ({ credential }) => {
           <Col xs={12} md={12}>
             <Card>
               <CardHeader>
-                <CardTitle tag="h3">News</CardTitle>
+                <CardTitle tag="h3">Preferred App Users</CardTitle>
               </CardHeader>
               <CardBody>
                 <ReactTable
@@ -192,12 +227,12 @@ const News = ({ credential }) => {
                   resizable={false}
                   columns={[
                     {
-                      Header: "Title",
-                      accessor: "title",
+                      Header: "App user",
+                      accessor: "username",
                     },
                     {
-                      Header: "Content",
-                      accessor: "content",
+                      Header: "Percentage",
+                      accessor: "percentage",
                     },
                     {
                       Header: "CreatedAt",
@@ -221,9 +256,9 @@ const News = ({ credential }) => {
           </Col>
         </Row>
       </div>
-      <Modal isOpen={show}>
+      <Modal isOpen={show} style={{ transform: "translate(0, 10%)" }}>
         <div className="modal-header">
-          <h4>{newsOne._id ? "Edit " : "Add "}News</h4>
+          <h4>{user._id ? "Edit " : "Add "}User</h4>
           <button
             aria-label="Close"
             className="close"
@@ -236,37 +271,45 @@ const News = ({ credential }) => {
         </div>
         <div className="modal-body">
           <Form className="form-horizontal">
-            <Row>
-              <Label md="3">Title</Label>
+            <Row className="mt-1 mb-4">
+              <Label md="3">App User</Label>
               <Col md="9">
                 <FormGroup>
-                  <Input
-                    type="text"
-                    value={newsOne.title}
-                    onChange={(e) => {
-                      setNewsOne({ ...newsOne, title: e.target.value });
-                    }}
-                  />
+                  <FormGroup>
+                    <Select
+                      className="react-select info"
+                      classNamePrefix="react-select"
+                      name="app_user_id"
+                      value={user.app_user_id}
+                      onChange={(value) =>
+                        setUser({ ...user, app_user_id: value })
+                      }
+                      options={users.map((one) => ({
+                        value: one._id,
+                        label: one.fullname,
+                      }))}
+                    />
+                  </FormGroup>
                 </FormGroup>
               </Col>
             </Row>
             <Row>
-              <Label md="3">Content</Label>
+              <Label md="3">Percentage</Label>
               <Col md="9">
                 <FormGroup>
                   <Input
-                    type="text"
-                    value={newsOne.content}
+                    type="number"
+                    value={user.percentage}
                     onChange={(e) => {
-                      setNewsOne({ ...newsOne, content: e.target.value });
+                      setUser({ ...user, percentage: e.target.value });
                     }}
                   />
                 </FormGroup>
               </Col>
             </Row>
             <Row style={{ float: "right", marginRight: "2px" }}>
-              <Button color="btn1 btn-sm" onClick={() => save(newsOne)}>
-                {newsOne._id ? "Update" : "Save"}
+              <Button color="btn1 btn-sm" onClick={() => save(user)}>
+                {user._id ? "Update" : "Save"}
               </Button>
               <Button color="btn1 btn-sm" onClick={() => closeModal()}>
                 Cancel
@@ -281,7 +324,7 @@ const News = ({ credential }) => {
         </div>
         <div className="modal-body">
           <Row style={{ float: "right", marginRight: "2px" }}>
-            <Button color="btn1 btn-sm" onClick={() => remove(newsOne)}>
+            <Button color="btn1 btn-sm" onClick={() => remove(user)}>
               Confirm
             </Button>
             <Button color="btn1 btn-sm" onClick={() => closeModal1()}>
@@ -299,4 +342,4 @@ const mapStateToProps = (state) => {
   return { credential: LoginReducer };
 };
 
-export default connect(mapStateToProps)(News);
+export default connect(mapStateToProps)(AppUser);

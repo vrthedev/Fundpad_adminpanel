@@ -63,10 +63,10 @@ const Search = (props) => {
           return ele;
         });
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }

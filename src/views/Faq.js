@@ -76,10 +76,10 @@ const Faq = ({ credential }) => {
         if (response.data.result) {
           setFaqs(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
@@ -105,13 +105,13 @@ const Faq = ({ credential }) => {
         if (response.data.result) {
           setFaqs(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -130,7 +130,7 @@ const Faq = ({ credential }) => {
         if (response.data.result) {
           setFaqs(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");

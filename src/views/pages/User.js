@@ -18,10 +18,10 @@ import {
 } from "reactstrap";
 
 const User = (props) => {
-  const [publickey, setKey] = useState('');
-  const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [publickey, setKey] = useState("");
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
     let options = {};
@@ -38,10 +38,10 @@ const User = (props) => {
   const submit = async (e) => {
     e.preventDefault();
     if (newPassword == "") {
-      notify('Please input a new password.', 'danger');
+      notify("Please input a new password.", "danger");
       return;
     } else if (newPassword != confirmPassword) {
-      notify('Passwords are not matched.', 'danger');
+      notify("Passwords are not matched.", "danger");
       return;
     }
     try {
@@ -57,14 +57,14 @@ const User = (props) => {
         payLoad
       );
       if (response.status === 200) {
-        notify(response.data.message, 'success');
+        notify(response.data.data, "success");
       } else {
-        notify('Failed in changing password.', 'danger');
+        notify("Failed in changing password.", "danger");
       }
     } catch (error) {
-      notify('Failed in changing password.', 'danger');
+      notify("Failed in changing password.", "danger");
     }
-  }
+  };
 
   return (
     <>
@@ -84,32 +84,53 @@ const User = (props) => {
                     <Col className="pr-md-1" md="12">
                       <FormGroup>
                         <label>Public key</label>
-                        <Input type="text" value={publickey} onChange={(e) => setKey(e.target.value)} />
+                        <Input
+                          type="text"
+                          value={publickey}
+                          onChange={(e) => setKey(e.target.value)}
+                        />
                       </FormGroup>
                     </Col>
                     <Col className="pr-md-1" md="12">
                       <FormGroup>
                         <label>Old Password</label>
-                        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        <Input
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
                       </FormGroup>
                     </Col>
                     <Col className="pr-md-1" md="12">
                       <FormGroup>
                         <label>New Password</label>
-                        <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                        <Input
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                        />
                       </FormGroup>
                     </Col>
                     <Col className="pr-md-1" md="12">
                       <FormGroup>
                         <label>Confirm Password</label>
-                        <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                        <Input
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
                       </FormGroup>
                     </Col>
                   </Row>
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button className="btn-fill" color="primary" type="submit" onClick={submit}>
+                <Button
+                  className="btn-fill"
+                  color="primary"
+                  type="submit"
+                  onClick={submit}
+                >
                   Save
                 </Button>
               </CardFooter>
@@ -125,6 +146,5 @@ const mapStateToProps = (state) => {
   const { LoginReducer } = state;
   return { credential: LoginReducer };
 };
-
 
 export default connect(mapStateToProps)(User);

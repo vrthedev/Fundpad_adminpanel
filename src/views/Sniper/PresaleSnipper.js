@@ -5,7 +5,7 @@ import {
   Button,
   ButtonGroup,
   Card,
-  CardHeader, 
+  CardHeader,
   CardBody,
   CardTitle,
   FormGroup,
@@ -30,46 +30,52 @@ import NotificationAlert from "react-notification-alert";
 import snip_image from "assets/img/sniper1.jpg";
 const PresaleSnipper = (props) => {
   //necessary functions import
-  const {apiConfig, ApiCall} = global;
+  const { apiConfig, ApiCall } = global;
   const [socket, setSocket] = useState("");
   const notificationAlertRef = React.useRef(null);
-  const showNotify = async (title, text, type = "success", place = 'tr', autoDismiss = 5) => {
+  const showNotify = async (
+    title,
+    text,
+    type = "success",
+    place = "tr",
+    autoDismiss = 5
+  ) => {
     const options = {
       place: place,
       message: (
-        <div><div>{title}</div><div>{text}</div></div>
+        <div>
+          <div>{title}</div>
+          <div>{text}</div>
+        </div>
       ),
       type: type,
       icon: "tim-icons icon-bell-55",
       autoDismiss: autoDismiss,
     };
     notificationAlertRef.current.notificationAlert(options);
-  }
+  };
   //setting modal
   const [modalAdd, setModalAdd] = useState(false);
   const [addData, setAddData] = useState({
     presaleAddr: "",
-    network:"",
-    min:0.01,
-    max:0.1,
-    amount:1,
-    time:'',
+    network: "",
+    min: 0.01,
+    max: 0.1,
+    amount: 1,
+    time: "",
   });
   const toggleModalAdd = () => {
-    setAddData(
-      {
-        presaleAddr: "",
-        network:"",
-        min:0.01,
-        max:0.1,
-        amount:1,
-        time:'',
-      }
-    );
+    setAddData({
+      presaleAddr: "",
+      network: "",
+      min: 0.01,
+      max: 0.1,
+      amount: 1,
+      time: "",
+    });
     setModalAdd(!modalAdd);
   };
   const addHandler = async () => {
-
     try {
       const response = await ApiCall(
         apiConfig.pre_add.url,
@@ -78,19 +84,17 @@ const PresaleSnipper = (props) => {
         addData
       );
       toggleModalAdd();
-      showNotify(response.data.message,'','success');
+      showNotify(response.data.data, "", "success");
       setLogData(response.data.data);
     } catch (error) {
       if (error.response) {
-        showNotify(error.response.data.message,'','danger');
-      } 
-      else if (error.request) {
+        showNotify(error.response.data.data, "", "danger");
+      } else if (error.request) {
         // client never received a response, or request never left
-        showNotify("Request failed",'','danger');
+        showNotify("Request failed", "", "danger");
         // console.log(error.request)
-      }
-      else {
-        showNotify("Something went wrong",'','danger');
+      } else {
+        showNotify("Something went wrong", "", "danger");
       }
     }
   };
@@ -100,20 +104,18 @@ const PresaleSnipper = (props) => {
         apiConfig.pre_del.url,
         apiConfig.pre_del.method,
         props.credential.loginToken,
-        {_id:_id}
+        { _id: _id }
       );
       if (response.data.data) setLogData(response.data.data);
     } catch (error) {
       if (error.response) {
-        showNotify(error.response.data.message,'','danger');
-      } 
-      else if (error.request) {
+        showNotify(error.response.data.data, "", "danger");
+      } else if (error.request) {
         // client never received a response, or request never left
-        showNotify("Request failed",'','danger');
+        showNotify("Request failed", "", "danger");
         // console.log(error.request)
-      }
-      else {
-        showNotify("Something went wrong",'','danger');
+      } else {
+        showNotify("Something went wrong", "", "danger");
       }
     }
   };
@@ -134,7 +136,7 @@ const PresaleSnipper = (props) => {
       setSocket(io(apiConfig.endPoint));
     }
     //read presale settings
-    async function readLog(){
+    async function readLog() {
       try {
         const response = await ApiCall(
           apiConfig.pre_read.url,
@@ -157,7 +159,7 @@ const PresaleSnipper = (props) => {
         // when connection started
         console.log("connect");
         socket.on("presale:one:logStatus", (data) => {
-          setLogData(data.filter(x=>x.public === publicKey));
+          setLogData(data.filter((x) => x.public === publicKey));
         });
       });
     }
@@ -176,7 +178,9 @@ const PresaleSnipper = (props) => {
           <Col xs={12} md={12}>
             <Card>
               <CardHeader>
-                <Button className="btn1" onClick={() => setModalAdd(true)}>Add presale</Button>
+                <Button className="btn1" onClick={() => setModalAdd(true)}>
+                  Add presale
+                </Button>
               </CardHeader>
               <CardBody>
                 <Table responsive>
@@ -193,31 +197,52 @@ const PresaleSnipper = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {
-                      logData.map((item,key)=>(
-                        <tr key={key}>
-                          <td key={1} className="text-center">
-                            <div className="photo">
-                              <img
-                                alt="..."
-                                src={require("assets/img/bitcoin.png").default}
-                              />
-                            </div>
-                          </td>
-                          <td key={2}><a href={`${item.ex_url}/${item.presaleAddr}`} target="_blank">{item.presaleAddr}</a></td>
-                          <td key={3} className="text-left">{item.min}</td>
-                          <td key={4} className="text-left">{item.max}</td>
-                          <td key={5} className="text-left">{item.amount}</td>
-                          <td key={6} className="text-left">{item.start_at}</td>
-                          <td key={7} className="text-left">{item.status_name}</td>
-                          <td key={8} className="text-left">
-                            <Button className="btn-link" color="danger" size="sm"  onClick={() => del(item._id)} title="Delete">
-                              <i className="tim-icons icon-simple-remove" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))
-                    }
+                    {logData.map((item, key) => (
+                      <tr key={key}>
+                        <td key={1} className="text-center">
+                          <div className="photo">
+                            <img
+                              alt="..."
+                              src={require("assets/img/bitcoin.png").default}
+                            />
+                          </div>
+                        </td>
+                        <td key={2}>
+                          <a
+                            href={`${item.ex_url}/${item.presaleAddr}`}
+                            target="_blank"
+                          >
+                            {item.presaleAddr}
+                          </a>
+                        </td>
+                        <td key={3} className="text-left">
+                          {item.min}
+                        </td>
+                        <td key={4} className="text-left">
+                          {item.max}
+                        </td>
+                        <td key={5} className="text-left">
+                          {item.amount}
+                        </td>
+                        <td key={6} className="text-left">
+                          {item.start_at}
+                        </td>
+                        <td key={7} className="text-left">
+                          {item.status_name}
+                        </td>
+                        <td key={8} className="text-left">
+                          <Button
+                            className="btn-link"
+                            color="danger"
+                            size="sm"
+                            onClick={() => del(item._id)}
+                            title="Delete"
+                          >
+                            <i className="tim-icons icon-simple-remove" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </CardBody>
@@ -311,18 +336,17 @@ const PresaleSnipper = (props) => {
                   </Col>
                   <Col md={6}>
                     <FormGroup>
-                        <label>Maximum Buy</label>
-                        <Input
-                          type="number"
-                          value={addData.max}
-                          onChange={(e) =>
-                            setAddData({ ...addData, max: e.target.value })
-                          }
-                        />
+                      <label>Maximum Buy</label>
+                      <Input
+                        type="number"
+                        value={addData.max}
+                        onChange={(e) =>
+                          setAddData({ ...addData, max: e.target.value })
+                        }
+                      />
                     </FormGroup>
                   </Col>
                 </Row>
-
               </Col>
               <Col className="pr-md-1" md="12">
                 <FormGroup>

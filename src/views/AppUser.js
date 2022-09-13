@@ -100,7 +100,7 @@ const AppUser = ({ credential }) => {
             notify(resp.data.message, "danger");
           }
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failed", "danger");
@@ -160,7 +160,7 @@ const AppUser = ({ credential }) => {
           notify(resp.data.message, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
@@ -198,13 +198,13 @@ const AppUser = ({ credential }) => {
             })
           );
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -235,7 +235,7 @@ const AppUser = ({ credential }) => {
             })
           );
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -262,7 +262,7 @@ const AppUser = ({ credential }) => {
             >
               <i class="tim-icons icon-key-25" aria-hidden="false"></i>
             </Button>{" "}
-            <Button
+            {/* <Button
               color="warning"
               size="sm"
               className={classNames("btn-icon btn-link like btn-neutral")}
@@ -270,7 +270,17 @@ const AppUser = ({ credential }) => {
               style={{ opacity: 0.7 }}
             >
               <i class="fa fa-eye" aria-hidden="false"></i>
-            </Button>{" "}
+            </Button>{" "} */}
+            <Link to={`/admin/appuserDetail/${prop._id}`}>
+              <Button
+                color="warning"
+                size="sm"
+                className={classNames("btn-icon btn-link like btn-neutral")}
+                style={{ opacity: 0.7 }}
+              >
+                <i class="fa fa-eye" aria-hidden="false"></i>
+              </Button>{" "}
+            </Link>
             <Button
               onClick={() => openModal(prop)}
               color="warning"

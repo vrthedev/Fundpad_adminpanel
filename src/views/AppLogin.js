@@ -64,7 +64,7 @@ const AppLogin = ({ credential, LoginSuccess, LogOutSuccess }) => {
       LoginSuccess(response.data);
     } catch (error) {
       if (error.response) {
-        notify(error.response.data.message, "danger");
+        notify(error.response.data.data, "danger");
       } else if (error.request) {
         // client never received a response, or request never left
         notify("Request failed", "", "danger");
@@ -115,9 +115,7 @@ const AppLogin = ({ credential, LoginSuccess, LogOutSuccess }) => {
                       paddingTop: "0px",
                       textAlign: "center",
                     }}
-                  >
-                    
-                  </CardTitle>
+                  ></CardTitle>
                 </CardHeader>
                 <CardBody>
                   <InputGroup

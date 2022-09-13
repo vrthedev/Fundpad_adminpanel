@@ -78,10 +78,10 @@ const Profit = ({ credential }) => {
         if (response.data.result) {
           setProfits(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
       notify("Failed in getting all plans.", "danger");
@@ -107,13 +107,13 @@ const Profit = ({ credential }) => {
         if (response.data.result) {
           setProfits(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } else {
-        notify(response.data.message, "danger");
+        notify(response.data.data, "danger");
       }
     } catch (error) {
-      if (error.response) notify(error.response.data.message, "danger");
+      if (error.response) notify(error.response.data.data, "danger");
       else if (error.request) notify("Request failed", "danger");
       else notify("Something went wrong", "danger");
     }
@@ -132,7 +132,7 @@ const Profit = ({ credential }) => {
         if (response.data.result) {
           setProfits(response.data.data);
         } else {
-          notify(response.data.message, "danger");
+          notify(response.data.data, "danger");
         }
       } catch (error) {
         notify("Failedllets.", "danger");
@@ -148,8 +148,15 @@ const Profit = ({ credential }) => {
         ...prop,
         createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
         percentage: prop.percentage + "%",
-        investor_payouts: prop.investor_payouts + "$",
-        referral_payouts: prop.referral_payouts + "$",
+        additional_payouts: prop.additional_payouts
+          ? prop.additional_payouts + "$"
+          : "",
+        investor_payouts: prop.investor_payouts
+          ? prop.investor_payouts + "$"
+          : "",
+        referral_payouts: prop.referral_payouts
+          ? prop.referral_payouts + "$"
+          : "",
         actions: (
           <div className="actions-right">
             <Link to={`/admin/profitDetail/${prop._id}`}>
@@ -203,6 +210,10 @@ const Profit = ({ credential }) => {
                     {
                       Header: "Percentage",
                       accessor: "percentage",
+                    },
+                    {
+                      Header: "Additional payouts",
+                      accessor: "additional_payouts",
                     },
                     {
                       Header: "Investor payouts",
