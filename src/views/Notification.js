@@ -38,13 +38,13 @@ const AppUser = ({ credential }) => {
     notificationAlertRef.current.notificationAlert(options);
   };
 
-  const send = async (message) => {
+  const send = async () => {
     try {
       const response = await ApiCall(
         apiConfig.note_send.url,
         apiConfig.note_send.method,
         credential.loginToken,
-        message
+        { message: message }
       );
       if (response.data.result) {
         setMessage("");
