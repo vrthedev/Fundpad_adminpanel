@@ -88,7 +88,7 @@ const AppUser = ({ credential }) => {
         notify(response.data.data, "danger");
       }
     } catch (error) {
-      notify("Failed in getting all plans.", "danger");
+      notify("Failed", "danger");
     }
     setUser({});
     setShow(false);
@@ -154,7 +154,7 @@ const AppUser = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
     (async () => {
@@ -171,7 +171,7 @@ const AppUser = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
   }, []);

@@ -84,7 +84,7 @@ const Profit = ({ credential }) => {
         notify(response.data.data, "danger");
       }
     } catch (error) {
-      notify("Failed in getting all plans.", "danger");
+      notify("Failed", "danger");
     }
     setProfit({});
     setShow(false);
@@ -135,7 +135,7 @@ const Profit = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
   }, []);

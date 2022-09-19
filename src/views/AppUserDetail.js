@@ -50,7 +50,7 @@ const AppUserDetail = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
     (async () => {
@@ -66,7 +66,7 @@ const AppUserDetail = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
     (async () => {
@@ -83,7 +83,7 @@ const AppUserDetail = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
   }, []);

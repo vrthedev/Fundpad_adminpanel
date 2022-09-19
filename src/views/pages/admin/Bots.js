@@ -92,7 +92,7 @@ const Bots = (props) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failed in getting all plans.", "danger");
+        notify("Failed", "danger");
       }
       try {
         const response = await ApiCall(

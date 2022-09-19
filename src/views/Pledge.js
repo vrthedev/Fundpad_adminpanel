@@ -102,7 +102,7 @@ const Pledge = ({ credential }) => {
         notify(response.data.data, "danger");
       }
     } catch (error) {
-      notify("Failed in getting all plans.", "danger");
+      notify("Failed", "danger");
     }
     setPledge({});
     setShow(false);
@@ -186,7 +186,7 @@ const Pledge = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
   }, []);

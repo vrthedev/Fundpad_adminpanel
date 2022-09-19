@@ -85,7 +85,7 @@ const Project = ({ credential }) => {
         notify(response.data.data, "danger");
       }
     } catch (error) {
-      notify("Failed in getting all plans.", "danger");
+      notify("Failed", "danger");
     }
     setProject({});
     setShow(false);
@@ -145,7 +145,7 @@ const Project = ({ credential }) => {
         notify(response.data.data, "danger");
       }
     } catch (error) {
-      notify("Failed in getting all plans.", "danger");
+      notify("Failed", "danger");
     }
     setProject({});
   };
@@ -164,7 +164,7 @@ const Project = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
   }, []);

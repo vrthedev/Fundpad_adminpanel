@@ -4,13 +4,21 @@ import { Line, Bar, Pie } from "react-chartjs-2";
 import NotificationAlert from "react-notification-alert";
 import {
   Card,
-  CardHeader,
   CardBody,
+  CardHeader,
   CardFooter,
   CardTitle,
   Row,
   Col,
+  Button,
+  Modal,
+  Input,
+  Label,
+  Form,
+  FormGroup,
+  CustomInput,
 } from "reactstrap";
+import ReactDatetime from "react-datetime";
 
 let chartOption = {
   maintainAspectRatio: false,
@@ -67,6 +75,9 @@ const Dashboard = ({ credential }) => {
   const notificationAlertRef = React.useRef(null);
   const [data, setData] = useState({});
   const [profits, setProfits] = useState([]);
+  const [show, setShow] = useState(false);
+  const [project, setProject] = useState({});
+
   let total_investor_payouts = 0;
   let total_referral_payouts = 0;
   profits.map((p) => {
@@ -100,7 +111,7 @@ const Dashboard = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
       }
     })();
     (async () => {
@@ -116,7 +127,26 @@ const Dashboard = ({ credential }) => {
           notify(response.data.data, "danger");
         }
       } catch (error) {
-        notify("Failedllets.", "danger");
+        notify("Failed", "danger");
+      }
+    })();
+
+    //set project
+    (async () => {
+      try {
+        const response = await ApiCall(
+          apiConfig.pro_get.url,
+          apiConfig.pro_get.method,
+          credential.loginToken
+        );
+        if (response.data.result) {
+          console.log(response.data.data);
+          setProject(response.data.data);
+        } else {
+          notify(response.data.data, "danger");
+        }
+      } catch (error) {
+        notify("Failed", "danger");
       }
     })();
   }, []);
@@ -157,7 +187,94 @@ const Dashboard = ({ credential }) => {
     options: chartOption,
   };
 
-  const referralChartData = {
+  const barChartData = {
+    data: (canvas) => {
+      let ctx = canvas.getContext("2d");
+
+      let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
+      gradientStroke.addColorStop(1, "rgba(72,72,176,0.1)");
+      gradientStroke.addColorStop(0.4, "rgba(72,72,176,0.0)");
+      gradientStroke.addColorStop(0, "rgba(119,52,169,0)"); //purple colors
+
+      return {
+        labels: profits.map((p) => p.name),
+        datasets: [
+          {
+            label: `Profits ${total_investor_payouts}$`,
+            fill: true,
+            backgroundColor: "#f36648",
+            hoverBackgroundColor: "#f36648",
+            borderColor: "#f36648",
+            borderWidth: 2,
+            borderDash: [],
+            borderDashOffset: 0.0,
+            data: profits.map((p) => p.investor_payouts || 0),
+          },
+          {
+            label: `Commissions ${total_referral_payouts}$`,
+            fill: true,
+            backgroundColor: "#7a48f3",
+            hoverBackgroundColor: "#7a48f3",
+            borderColor: "#7a48f3",
+            borderWidth: 2,
+            borderDash: [],
+            borderDashOffset: 0.0,
+            data: profits.map((p) => p.referral_payouts || 0),
+          },
+        ],
+      };
+    },
+    options: {
+      maintainAspectRatio: false,
+      legend: {
+        display: true,
+      },
+      tooltips: {
+        backgroundColor: "#f5f5f5",
+        titleFontColor: "#333",
+        bodyFontColor: "#666",
+        bodySpacing: 4,
+        xPadding: 1,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest",
+      },
+      responsive: true,
+      scales: {
+        yAxes: [
+          {
+            gridLines: {
+              drawBorder: false,
+              color: "rgba(225,78,202,0.1)",
+              zeroLineColor: "transparent",
+            },
+            ticks: {
+              suggestedMin: 60,
+              // suggestedMax: 120,
+              padding: 20,
+              fontColor: "#9e9e9e",
+            },
+          },
+        ],
+        xAxes: [
+          {
+            gridLines: {
+              drawBorder: false,
+              color: "rgba(225,78,202,0.1)",
+              zeroLineColor: "transparent",
+            },
+            ticks: {
+              padding: 20,
+              fontColor: "#9e9e9e",
+            },
+          },
+        ],
+      },
+    },
+  };
+
+  const lineChartData = {
     data: (canvas) => {
       let ctx = canvas.getContext("2d");
 
@@ -319,6 +436,29 @@ const Dashboard = ({ credential }) => {
     },
   };
 
+  const closeModal = () => {
+    setShow(false);
+  };
+  const save = async (pro) => {
+    try {
+      const response = await ApiCall(
+        apiConfig.pro_upsert.url,
+        apiConfig.pro_upsert.method,
+        credential.loginToken,
+        pro
+      );
+      if (response.data.result) {
+        window.location.reload();
+      } else {
+        notify(response.data.data, "danger");
+      }
+    } catch (error) {
+      notify("Failed", "danger");
+    }
+    setProject({});
+    setShow(false);
+  };
+
   return (
     <>
       <div className="rna-container">
@@ -339,7 +479,7 @@ const Dashboard = ({ credential }) => {
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
-                          <p className="card-category">App Users</p>
+                          <p className="card-category">Registerd App Users</p>
                           <CardTitle tag="h3">{data.app_users}</CardTitle>
                         </div>
                       </Col>
@@ -348,32 +488,8 @@ const Dashboard = ({ credential }) => {
                   <CardFooter>
                     <hr />
                     <div className="stats">
-                      <i className="tim-icons icon-single-02" /> App Users
-                    </div>
-                  </CardFooter>
-                </Card>
-              </Col>
-              <Col lg="4" md="6">
-                <Card className="card-stats">
-                  <CardBody>
-                    <Row>
-                      <Col xs="5">
-                        <div className="info-icon text-center icon-warning">
-                          <i className="tim-icons icon-app" />
-                        </div>
-                      </Col>
-                      <Col xs="7">
-                        <div className="numbers">
-                          <p className="card-category">Active App Users</p>
-                          <CardTitle tag="h3">{data.active_users}</CardTitle>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                  <CardFooter>
-                    <hr />
-                    <div className="stats">
-                      <i className="tim-icons icon-app" /> Active App Users
+                      <i className="tim-icons icon-single-02" />
+                      Registerd App Users
                     </div>
                   </CardFooter>
                 </Card>
@@ -403,8 +519,59 @@ const Dashboard = ({ credential }) => {
                   </CardFooter>
                 </Card>
               </Col>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-warning">
+                          <i className="tim-icons icon-app" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">Active App Users</p>
+                          <CardTitle tag="h3">{data.active_users}</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="tim-icons icon-app" /> Active App Users
+                    </div>
+                  </CardFooter>
+                </Card>
+              </Col>
             </Row>
             <Row>
+              <Col lg="4" md="6">
+                <Card className="card-stats">
+                  <CardBody>
+                    <Row>
+                      <Col xs="5">
+                        <div className="info-icon text-center icon-danger">
+                          <i className="tim-icons icon-money-coins" />
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div className="numbers">
+                          <p className="card-category">TXID Submitted (no.) </p>
+                          <CardTitle tag="h3">{data.received_num}</CardTitle>
+                        </div>
+                      </Col>
+                    </Row>
+                  </CardBody>
+                  <CardFooter>
+                    <hr />
+                    <div className="stats">
+                      <i className="tim-icons icon-money-coins" /> TXID
+                      Submitted (no.)
+                    </div>
+                  </CardFooter>
+                </Card>
+              </Col>
               <Col lg="4" md="6">
                 <Card className="card-stats">
                   <CardBody>
@@ -430,6 +597,7 @@ const Dashboard = ({ credential }) => {
                   </CardFooter>
                 </Card>
               </Col>
+
               <Col lg="4" md="6">
                 <Card className="card-stats">
                   <CardBody>
@@ -441,32 +609,7 @@ const Dashboard = ({ credential }) => {
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
-                          <p className="card-category">Payments Received (no.) </p>
-                          <CardTitle tag="h3">{data.received_num}</CardTitle>
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                  <CardFooter>
-                    <hr />
-                    <div className="stats">
-                      <i className="tim-icons icon-money-coins" /> Payments Received (no.) 
-                    </div>
-                  </CardFooter>
-                </Card>
-              </Col>
-              <Col lg="4" md="6">
-                <Card className="card-stats">
-                  <CardBody>
-                    <Row>
-                      <Col xs="5">
-                        <div className="info-icon text-center icon-danger">
-                          <i className="tim-icons icon-money-coins" />
-                        </div>
-                      </Col>
-                      <Col xs="7">
-                        <div className="numbers">
-                          <p className="card-category">Received ($)</p>
+                          <p className="card-category">Active Users ($)</p>
                           <CardTitle tag="h3">{data.received_total}$</CardTitle>
                         </div>
                       </Col>
@@ -476,9 +619,28 @@ const Dashboard = ({ credential }) => {
                     <hr />
                     <div className="stats">
                       <i className="tim-icons icon-money-coins" />
-                      Received ($)
+                      Confirmed payments by admin
                     </div>
                   </CardFooter>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col md="12">
+                <Card className="card-chart">
+                  <CardHeader>
+                    <h5 className="card-category">Payouts</h5>
+                    <CardTitle tag="h4"></CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-area">
+                      <Bar
+                        data={barChartData.data}
+                        options={barChartData.options}
+                        height="450px"
+                      />
+                    </div>
+                  </CardBody>
                 </Card>
               </Col>
             </Row>
@@ -487,16 +649,6 @@ const Dashboard = ({ credential }) => {
             <div className="chart-area" style={{ marginTop: 20 }}>
               <Pie data={chartData.data} options={chartData.options} />
             </div>
-            {/* <div style={{ transform: "translate(0, 10%)" }}>
-              <span
-                style={{
-                  fontSize: 48,
-                  color: "#2a84e9",
-                }}
-              >
-                {Math.round((data.fund_raised / data.fund_target) * 100)}%
-              </span>
-            </div> */}
             <div style={{ marginTop: 10 }}>
               <h4
                 style={{ color: "#808080" }}
@@ -514,29 +666,119 @@ const Dashboard = ({ credential }) => {
                 (data.fund_raised / data.fund_target) * 100
               )} %`}</h4>
             </div>
-          </Col>                  
-          <Col lg="4">
-            <Card className="card-chart">
-              <CardHeader>
-                <h5 className="card-category">Payouts</h5>
-                <CardTitle tag="h4">
-                  <i className="tim-icons icon-send text-success" />{" "}
-                  Referral: {total_referral_payouts}$, 
-                  Investor:{total_investor_payouts}$
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="chart-area">
-                  <Line
-                    data={referralChartData.data}
-                    options={referralChartData.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
+            <button
+              onClick={() => {
+                setShow(true);
+              }}
+            >
+              Edit{" "}
+            </button>
           </Col>
         </Row>
       </div>
+      <Modal isOpen={show}>
+        <div className="modal-header">
+          <h4>{project._id ? "Edit " : "Add "}Projects</h4>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => closeModal()}
+          >
+            <i className="tim-icons icon-simple-remove" />
+          </button>
+        </div>
+        <div className="modal-body">
+          <Form className="form-horizontal">
+            {/* <Row>
+              <Label md="3">Project Name</Label>
+              <Col md="9">
+                <FormGroup>
+                  <Input
+                    type="text"
+                    value={project.name}
+                    onChange={(e) => {
+                      setProject({ ...project, name: e.target.value });
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row> */}
+            <Row>
+              <Label md="3">Target</Label>
+              <Col md="9">
+                <FormGroup>
+                  <Input
+                    type="number"
+                    value={project.fund_target}
+                    onChange={(e) => {
+                      setProject({ ...project, fund_target: e.target.value });
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Label md="3">Pledged</Label>
+              <Col md="9">
+                <FormGroup>
+                  <Input
+                    type="number"
+                    value={project.fund_raised}
+                    onChange={(e) => {
+                      setProject({ ...project, fund_raised: e.target.value });
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            {/* <Row>
+              <Label md="3">End Date</Label>
+              <Col md="9">
+                <FormGroup>
+                  <ReactDatetime
+                    inputProps={{
+                      className: "form-control",
+                      placeholder: "Datetime Picker Here",
+                    }}
+                    value={{ _d: project.endDate }}
+                    onChange={(date) => {
+                      setProject({ ...project, endDate: date._d });
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row className="mt-1 mb-4">
+              <Label md="3"></Label>
+              <Col md="9">
+                <FormGroup check>
+                  <Label check>
+                    <Input
+                      type="checkbox"
+                      defaultChecked={project.isActive}
+                      onChange={() =>
+                        setProject({ ...project, isActive: !project.isActive })
+                      }
+                    />
+                    <span className="form-check-sign" />
+                    IsActive
+                  </Label>
+                </FormGroup>
+              </Col>
+            </Row> */}
+            <Row style={{ float: "right", marginRight: "2px" }}>
+              <Button color="btn1 btn-sm" onClick={() => save(project)}>
+                {project._id ? "Update" : "Save"}
+              </Button>
+              <Button color="btn1 btn-sm" onClick={() => closeModal()}>
+                Cancel
+              </Button>
+            </Row>
+          </Form>
+        </div>
+      </Modal>
     </>
   );
 };
