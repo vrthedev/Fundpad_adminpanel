@@ -192,7 +192,7 @@ const Bots = (props) => {
                       <th className="text-left">Mint function</th>
                       <th className="text-left">Minted amount</th>
                       <th className="text-left">Token Price</th>
-                      <th className="text-left">Transaction</th>
+                      <th className="text-left">TXID</th>
                       <th className="text-left">Gas Price</th>
                       <th className="text-left">Status</th>
                       <th className="text-left">Created</th>

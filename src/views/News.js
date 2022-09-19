@@ -199,10 +199,10 @@ const News = ({ credential }) => {
                       Header: "Content",
                       accessor: "content",
                     },
-                    {
-                      Header: "CreatedAt",
-                      accessor: "createdAt",
-                    },
+                    // {
+                    //   Header: "CreatedAt",
+                    //   accessor: "createdAt",
+                    // },
                     {
                       Header: "Actions",
                       accessor: "actions",

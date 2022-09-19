@@ -234,10 +234,10 @@ const AppUser = ({ credential }) => {
                       Header: "Percentage",
                       accessor: "percentage",
                     },
-                    {
-                      Header: "CreatedAt",
-                      accessor: "createdAt",
-                    },
+                    // {
+                    //   Header: "CreatedAt",
+                    //   accessor: "createdAt",
+                    // },
                     {
                       Header: "Actions",
                       accessor: "actions",

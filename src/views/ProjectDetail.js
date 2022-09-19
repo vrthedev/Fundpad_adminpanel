@@ -166,7 +166,7 @@ const ProjectDetail = ({ credential }) => {
 
   const chartData = {
     data: {
-      labels: ["Target fund", "Raised fund"],
+      labels: ["Target amount", "Pledged amount"],
       datasets: [
         {
           label: "Emails",
@@ -321,10 +321,10 @@ const ProjectDetail = ({ credential }) => {
                 <Row style={{ marginLeft: 0 }}>
                   <Col md="8" lg="9" sm="7">
                     <Row>
-                      <h4>{`Target Fund: ${project.fund_target} $`} </h4>
+                      <h4>{`Target Amount: ${project.fund_target} $`} </h4>
                     </Row>
                     <Row>
-                      <h4>{`Raised Fund: ${project.fund_raised} $`} </h4>
+                      <h4>{`Pledged Amount: ${project.fund_raised} $`} </h4>
                     </Row>
                     <Row>
                       <h4>{`Pledges Number: ${data.pledges_num}`}</h4>
@@ -366,7 +366,7 @@ const ProjectDetail = ({ credential }) => {
                         accessor: "amount",
                       },
                       {
-                        Header: "Transaction",
+                        Header: "TXID",
                         accessor: "transaction",
                       },
                       {
@@ -377,10 +377,10 @@ const ProjectDetail = ({ credential }) => {
                         Header: "Approved",
                         accessor: "approved",
                       },
-                      {
-                        Header: "Date",
-                        accessor: "dateStr",
-                      },
+                      // {
+                      //   Header: "Date",
+                      //   accessor: "dateStr",
+                      // },
                     ]}
                     defaultPageSize={10}
                     showPaginationTop
@@ -413,10 +413,10 @@ const ProjectDetail = ({ credential }) => {
                         Header: "Referral Payouts",
                         accessor: "referral_payouts",
                       },
-                      {
-                        Header: "CreatedAt",
-                        accessor: "createdAt",
-                      },
+                      // {
+                      //   Header: "CreatedAt",
+                      //   accessor: "createdAt",
+                      // },
                     ]}
                     defaultPageSize={10}
                     showPaginationTop

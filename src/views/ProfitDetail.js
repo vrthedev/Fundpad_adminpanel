@@ -274,7 +274,7 @@ const ProfitDetail = ({ credential }) => {
                       </h4>
                     </Row>
                     <Row>
-                      <h4>Additional Payouts:</h4>
+                      <h4>Preferred User Payouts:</h4>
                       <h4 style={{ marginLeft: 5 }}>
                         {profit.additional_payouts}$
                       </h4>
@@ -316,10 +316,10 @@ const ProfitDetail = ({ credential }) => {
                           Header: "Amount",
                           accessor: "amount",
                         },
-                        {
-                          Header: "CreatedAt",
-                          accessor: "createdAt",
-                        },
+                        // {
+                        //   Header: "CreatedAt",
+                        //   accessor: "createdAt",
+                        // },
                       ]}
                       defaultPageSize={10}
                       showPaginationTop
@@ -359,10 +359,10 @@ const ProfitDetail = ({ credential }) => {
                           Header: "Amount",
                           accessor: "amount",
                         },
-                        {
-                          Header: "CreatedAt",
-                          accessor: "createdAt",
-                        },
+                        // {
+                        //   Header: "CreatedAt",
+                        //   accessor: "createdAt",
+                        // },
                       ]}
                       defaultPageSize={10}
                       showPaginationTop
@@ -375,7 +375,7 @@ const ProfitDetail = ({ credential }) => {
                   <div style={{ marginTop: "20px" }}>
                     <ReactTable
                       data={profitInfo.additional_payouts}
-                      title="Additional Payouts"
+                      title="Preferred User Payouts"
                       isProfit={true}
                       isExport={isExport}
                       filterable
@@ -401,10 +401,10 @@ const ProfitDetail = ({ credential }) => {
                           Header: "Amount",
                           accessor: "amount",
                         },
-                        {
-                          Header: "CreatedAt",
-                          accessor: "createdAt",
-                        },
+                        // {
+                        //   Header: "CreatedAt",
+                        //   accessor: "createdAt",
+                        // },
                       ]}
                       defaultPageSize={10}
                       showPaginationTop

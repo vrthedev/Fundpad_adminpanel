@@ -157,82 +157,6 @@ const Dashboard = ({ credential }) => {
     options: chartOption,
   };
 
-  const investorChartData = {
-    data: (canvas) => {
-      let ctx = canvas.getContext("2d");
-
-      let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-      gradientStroke.addColorStop(1, "rgba(72,72,176,0.1)");
-      gradientStroke.addColorStop(0.4, "rgba(72,72,176,0.0)");
-      gradientStroke.addColorStop(0, "rgba(119,52,169,0)"); //purple colors
-
-      return {
-        labels: profits.map((p) => p.name),
-        datasets: [
-          {
-            label: "Countries",
-            fill: true,
-            backgroundColor: gradientStroke,
-            hoverBackgroundColor: gradientStroke,
-            borderColor: "#d048b6",
-            borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            data: profits.map((p) => p.investor_payouts || 0),
-          },
-        ],
-      };
-    },
-    options: {
-      maintainAspectRatio: false,
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        backgroundColor: "#f5f5f5",
-        titleFontColor: "#333",
-        bodyFontColor: "#666",
-        bodySpacing: 4,
-        xPadding: 1,
-        mode: "nearest",
-        intersect: 0,
-        position: "nearest",
-      },
-      responsive: true,
-      scales: {
-        yAxes: [
-          {
-            gridLines: {
-              drawBorder: false,
-              color: "rgba(225,78,202,0.1)",
-              zeroLineColor: "transparent",
-            },
-            ticks: {
-              suggestedMin: 60,
-              // suggestedMax: 120,
-              padding: 20,
-              fontColor: "#9e9e9e",
-            },
-          },
-        ],
-        xAxes: [
-          {
-            gridLines: {
-              drawBorder: false,
-              color: "rgba(225,78,202,0.1)",
-              zeroLineColor: "transparent",
-            },
-            ticks: {
-              padding: 20,
-              fontColor: "#9e9e9e",
-            },
-          },
-        ],
-      },
-    },
-  };
-
   const referralChartData = {
     data: (canvas) => {
       let ctx = canvas.getContext("2d");
@@ -247,7 +171,7 @@ const Dashboard = ({ credential }) => {
         labels: profits.map((p) => p.name),
         datasets: [
           {
-            label: "My First dataset",
+            label: "Referral Payouts",
             fill: true,
             backgroundColor: gradientStroke,
             borderColor: "#00d6b4",
@@ -262,6 +186,23 @@ const Dashboard = ({ credential }) => {
             pointHoverBorderWidth: 15,
             pointRadius: 4,
             data: profits.map((p) => p.referral_payouts || 0),
+          },
+          {
+            label: "Investor Payouts",
+            fill: true,
+            backgroundColor: gradientStroke,
+            borderColor: "#ed4343",
+            borderWidth: 2,
+            borderDash: [],
+            borderDashOffset: 0.0,
+            pointBackgroundColor: "#ed4343",
+            pointBorderColor: "rgba(255,255,255,0)",
+            pointHoverBackgroundColor: "#00d6b4",
+            pointBorderWidth: 20,
+            pointHoverRadius: 4,
+            pointHoverBorderWidth: 15,
+            pointRadius: 4,
+            data: profits.map((p) => p.investor_payouts || 0),
           },
         ],
       };
@@ -319,7 +260,7 @@ const Dashboard = ({ credential }) => {
 
   const chartData = {
     data: {
-      labels: ["Raised fund", ""],
+      labels: ["Pledged amount", ""],
       datasets: [
         {
           label: "Emails",
@@ -423,7 +364,7 @@ const Dashboard = ({ credential }) => {
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
-                          <p className="card-category">Active Users</p>
+                          <p className="card-category">Active App Users</p>
                           <CardTitle tag="h3">{data.active_users}</CardTitle>
                         </div>
                       </Col>
@@ -432,7 +373,7 @@ const Dashboard = ({ credential }) => {
                   <CardFooter>
                     <hr />
                     <div className="stats">
-                      <i className="tim-icons icon-app" /> Active Users
+                      <i className="tim-icons icon-app" /> Active App Users
                     </div>
                   </CardFooter>
                 </Card>
@@ -448,7 +389,7 @@ const Dashboard = ({ credential }) => {
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
-                          <p className="card-category">Pledges Number</p>
+                          <p className="card-category">Pledges (no.)</p>
                           <CardTitle tag="h3">{data.pledges_num}</CardTitle>
                         </div>
                       </Col>
@@ -457,7 +398,7 @@ const Dashboard = ({ credential }) => {
                   <CardFooter>
                     <hr />
                     <div className="stats">
-                      <i className="tim-icons icon-coins" /> Pledges Number
+                      <i className="tim-icons icon-coins" /> Pledges (no.)
                     </div>
                   </CardFooter>
                 </Card>
@@ -475,7 +416,7 @@ const Dashboard = ({ credential }) => {
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
-                          <p className="card-category">Pledges Total</p>
+                          <p className="card-category">Pledges ($)</p>
                           <CardTitle tag="h3">{data.pledges_total}$</CardTitle>
                         </div>
                       </Col>
@@ -484,7 +425,7 @@ const Dashboard = ({ credential }) => {
                   <CardFooter>
                     <hr />
                     <div className="stats">
-                      <i className="tim-icons icon-money-coins" /> Pledges Total
+                      <i className="tim-icons icon-money-coins" /> Pledges ($)
                     </div>
                   </CardFooter>
                 </Card>
@@ -500,7 +441,7 @@ const Dashboard = ({ credential }) => {
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
-                          <p className="card-category">Received Number</p>
+                          <p className="card-category">Payments Received (no.) </p>
                           <CardTitle tag="h3">{data.received_num}</CardTitle>
                         </div>
                       </Col>
@@ -509,8 +450,7 @@ const Dashboard = ({ credential }) => {
                   <CardFooter>
                     <hr />
                     <div className="stats">
-                      <i className="tim-icons icon-money-coins" /> Received
-                      Number
+                      <i className="tim-icons icon-money-coins" /> Payments Received (no.) 
                     </div>
                   </CardFooter>
                 </Card>
@@ -526,7 +466,7 @@ const Dashboard = ({ credential }) => {
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
-                          <p className="card-category">Received Total</p>
+                          <p className="card-category">Received ($)</p>
                           <CardTitle tag="h3">{data.received_total}$</CardTitle>
                         </div>
                       </Col>
@@ -536,7 +476,7 @@ const Dashboard = ({ credential }) => {
                     <hr />
                     <div className="stats">
                       <i className="tim-icons icon-money-coins" />
-                      Received Total
+                      Received ($)
                     </div>
                   </CardFooter>
                 </Card>
@@ -560,66 +500,29 @@ const Dashboard = ({ credential }) => {
             <div style={{ marginTop: 10 }}>
               <h4
                 style={{ color: "#808080" }}
-              >{`Target Fund: ${data.fund_target} $`}</h4>
+              >{`Target Amount: ${data.fund_target} $`}</h4>
             </div>
             <div style={{ marginTop: 0 }}>
               <h4
                 style={{ color: "#808080" }}
-              >{`Raised Fund: ${data.fund_raised} $`}</h4>
+              >{`Pledged amount: ${data.fund_raised} $`}</h4>
             </div>
             <div style={{ marginTop: 0 }}>
               <h4
                 style={{ color: "#808080" }}
-              >{`Raised Percentage: ${Math.round(
+              >{`Pledged Percentage: ${Math.round(
                 (data.fund_raised / data.fund_target) * 100
               )} %`}</h4>
             </div>
-          </Col>
+          </Col>                  
           <Col lg="4">
             <Card className="card-chart">
               <CardHeader>
-                <h5 className="card-category">Project profits</h5>
-                <CardTitle tag="h3">
-                  <i className="tim-icons icon-money-coins text-primary" />
-                  {profits.length}
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="chart-area">
-                  <Line
-                    data={profitChartData.data}
-                    options={profitChartData.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-          <Col lg="4">
-            <Card className="card-chart">
-              <CardHeader>
-                <h5 className="card-category">Investor payouts</h5>
-                <CardTitle tag="h3">
-                  <i className="tim-icons icon-delivery-fast text-info" />{" "}
-                  {total_investor_payouts}$
-                </CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="chart-area">
-                  <Bar
-                    data={investorChartData.data}
-                    options={investorChartData.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
-          <Col lg="4">
-            <Card className="card-chart">
-              <CardHeader>
-                <h5 className="card-category">Referral Commissions</h5>
-                <CardTitle tag="h3">
+                <h5 className="card-category">Payouts</h5>
+                <CardTitle tag="h4">
                   <i className="tim-icons icon-send text-success" />{" "}
-                  {total_referral_payouts}$
+                  Referral: {total_referral_payouts}$, 
+                  Investor:{total_investor_payouts}$
                 </CardTitle>
               </CardHeader>
               <CardBody>

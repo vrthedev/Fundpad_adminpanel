@@ -261,17 +261,17 @@ const Project = ({ credential }) => {
                       accessor: "fund_target",
                     },
                     {
-                      Header: "Raised",
+                      Header: "Pledged",
                       accessor: "fund_raised",
                     },
                     {
                       Header: "EndDate",
                       accessor: "endDate",
                     },
-                    {
-                      Header: "CreatedAt",
-                      accessor: "createdAt",
-                    },
+                    // {
+                    //   Header: "CreatedAt",
+                    //   accessor: "createdAt",
+                    // },
                     // {
                     //   Header: "Pinned",
                     //   accessor: "pinned",
@@ -334,7 +334,7 @@ const Project = ({ credential }) => {
               </Col>
             </Row>
             <Row>
-              <Label md="3">Fund Target</Label>
+              <Label md="3">Target</Label>
               <Col md="9">
                 <FormGroup>
                   <Input
@@ -348,7 +348,7 @@ const Project = ({ credential }) => {
               </Col>
             </Row>
             <Row>
-              <Label md="3">Fund Raised</Label>
+              <Label md="3">Pledged</Label>
               <Col md="9">
                 <FormGroup>
                   <Input

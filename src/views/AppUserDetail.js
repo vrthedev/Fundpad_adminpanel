@@ -88,67 +88,6 @@ const AppUserDetail = ({ credential }) => {
     })();
   }, []);
 
-  // const chartData = {
-  //   data: {
-  //     labels: ["Target fund", "Raised fund"],
-  //     datasets: [
-  //       {
-  //         label: "Emails",
-  //         pointRadius: 0,
-  //         pointHoverRadius: 0,
-  //         backgroundColor: ["#ff8779", "#2a84e9"],
-  //         borderWidth: 0,
-  //         data: [project.fund_target, project.fund_raised],
-  //       },
-  //     ],
-  //   },
-  //   options: {
-  //     cutoutPercentage: 70,
-  //     legend: {
-  //       display: false,
-  //     },
-  //     tooltips: {
-  //       backgroundColor: "#f5f5f5",
-  //       titleFontColor: "#333",
-  //       bodyFontColor: "#666",
-  //       bodySpacing: 4,
-  //       xPadding: 12,
-  //       mode: "nearest",
-  //       intersect: 0,
-  //       position: "nearest",
-  //     },
-  //     scales: {
-  //       yAxes: [
-  //         {
-  //           display: 0,
-  //           ticks: {
-  //             display: false,
-  //           },
-  //           gridLines: {
-  //             drawBorder: false,
-  //             zeroLineColor: "transparent",
-  //             color: "rgba(255,255,255,0.05)",
-  //           },
-  //         },
-  //       ],
-  //       xAxes: [
-  //         {
-  //           display: 0,
-  //           barPercentage: 1.6,
-  //           gridLines: {
-  //             drawBorder: false,
-  //             color: "rgba(255,255,255,0.1)",
-  //             zeroLineColor: "transparent",
-  //           },
-  //           ticks: {
-  //             display: false,
-  //           },
-  //         },
-  //       ],
-  //     },
-  //   },
-  // };
-
   const getUserName = (_id) => {
     if (users.length === 0 || !users) return "";
     const tmp = users.filter((u) => u._id === _id);
@@ -156,47 +95,6 @@ const AppUserDetail = ({ credential }) => {
     return tmp[0].fullname || "";
   };
 
-  // const exportPDF = async () => {
-  //   setIsExport(false);
-  //   await wait(10);
-  //   // const pdf = new jsPDF("portrait", "pt", "a4");
-  //   const pdf = new jsPDF("landscape", "pt", "a4");
-  //   const data = await html2canvas(document.querySelector("#pdf"));
-  //   setIsExport(true);
-  //   const img = data.toDataURL("image/png");
-  //   const imgProperties = pdf.getImageProperties(img);
-  //   const pdfWidth = pdf.internal.pageSize.getWidth();
-  //   const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
-  //   pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
-  //   pdf.save("project_detail.pdf");
-  // };
-
-  // const exportExcel = (pledges, profits) => {
-  //   const pledgeData = pledges.map((p) => ({
-  //     Investor: getUserName(p.investor_id),
-  //     Referrer: getUserName(p.referrer_id),
-  //     Amount: p.amount,
-  //     CreatedAt: Moment(p.createdAt).format("DD/MM/YYYY hh:mm:ss"),
-  //   }));
-  //   const profitData = profits.map((p) => ({
-  //     Name: p.name,
-  //     Percentage: p.percentage,
-  //     CreatedAt: Moment(p.createdAt).format("DD/MM/YYYY hh:mm:ss"),
-  //   }));
-  //   console.log(pledgeData, profitData, "+++");
-  //   const fileType =
-  //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  //   const fileExtension = ".xlsx";
-  //   const wsPledge = XLSX.utils.json_to_sheet(pledgeData);
-  //   const wsProfit = XLSX.utils.json_to_sheet(profitData);
-  //   const wb = {
-  //     Sheets: { pledge: wsPledge, profit: wsProfit },
-  //     SheetNames: ["pledge", "profit"],
-  //   };
-  //   const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  //   const data = new Blob([excelBuffer], { type: fileType });
-  //   FileSaver.saveAs(data, "project_detail.xlsx");
-  // };
   let userinfo1 = {};
   if (userinfo.pledges)
     userinfo1 = {
@@ -382,7 +280,7 @@ const AppUserDetail = ({ credential }) => {
                           accessor: "amount",
                         },
                         {
-                          Header: "Transaction",
+                          Header: "TXID",
                           accessor: "transaction",
                         },
                         {
@@ -510,7 +408,7 @@ const AppUserDetail = ({ credential }) => {
                       isProfit={true}
                       isExport={isExport}
                       title={
-                        "Additional payouts: " +
+                        "Preferred User Payouts: " +
                         userinfo1.additional_payout_sum +
                         "$"
                       }

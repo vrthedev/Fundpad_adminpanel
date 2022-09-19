@@ -212,7 +212,7 @@ const Profit = ({ credential }) => {
                       accessor: "percentage",
                     },
                     {
-                      Header: "Additional payouts",
+                      Header: "Preferred User Payouts",
                       accessor: "additional_payouts",
                     },
                     {
@@ -223,10 +223,10 @@ const Profit = ({ credential }) => {
                       Header: "Referral payouts",
                       accessor: "referral_payouts",
                     },
-                    {
-                      Header: "CreatedAt",
-                      accessor: "createdAt",
-                    },
+                    // {
+                    //   Header: "CreatedAt",
+                    //   accessor: "createdAt",
+                    // },
                     {
                       Header: "Actions",
                       accessor: "actions",

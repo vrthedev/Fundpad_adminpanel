@@ -22,7 +22,7 @@ import PreAppUser from "views/PreAppUser";
 const routes = [
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "Home",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
@@ -74,7 +74,7 @@ const routes = [
   },
   {
     path: "/appuser",
-    name: "AppUser",
+    name: "App Users",
     rtlName: "يتعهد",
     icon: "tim-icons icon-single-02",
     component: AppUser,
@@ -92,7 +92,7 @@ const routes = [
   },
   {
     path: "/preappuser",
-    name: "Preferred AppUser",
+    name: "Preferred App Users",
     rtlName: "يتعهد",
     icon: "tim-icons icon-user-run",
     component: PreAppUser,
@@ -100,7 +100,7 @@ const routes = [
   },
   {
     path: "/notification",
-    name: "Notification",
+    name: "Notifications",
     rtlName: "يتعهد",
     icon: "tim-icons icon-notes",
     component: Notification,

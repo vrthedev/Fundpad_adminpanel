@@ -231,6 +231,13 @@ const AppUser = ({ credential }) => {
                   refs.length > 0
                     ? { value: refs[0]._id, label: refs[0].fullname }
                     : {},
+                isActiveUser: p.isActiveUser ? (
+                  <span style={{ marginLeft: 5, color: "green" }}>
+                    <i className="tim-icons icon-check-2" />
+                  </span>
+                ) : (
+                  ""
+                ),
               };
             })
           );
@@ -353,9 +360,13 @@ const AppUser = ({ credential }) => {
                       accessor: "referral_code",
                     },
                     {
-                      Header: "CreatedAt",
-                      accessor: "createdAt",
+                      Header: "Active",
+                      accessor: "isActiveUser",
                     },
+                    // {
+                    //   Header: "CreatedAt",
+                    //   accessor: "createdAt",
+                    // },
                     {
                       Header: "Actions",
                       accessor: "actions",

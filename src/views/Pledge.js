@@ -289,7 +289,7 @@ const Pledge = ({ credential }) => {
                       accessor: "amount",
                     },
                     {
-                      Header: "Transaction",
+                      Header: "TXID",
                       accessor: "transaction",
                     },
                     {
@@ -300,10 +300,10 @@ const Pledge = ({ credential }) => {
                       Header: "Approved",
                       accessor: "approved",
                     },
-                    {
-                      Header: "CreatedAt",
-                      accessor: "createdAt",
-                    },
+                    // {
+                    //   Header: "CreatedAt",
+                    //   accessor: "createdAt",
+                    // },
                     {
                       Header: "Actions",
                       accessor: "actions",
@@ -373,7 +373,7 @@ const Pledge = ({ credential }) => {
               </Col>
             </Row>
             <Row>
-              <Label md="3">Transaction</Label>
+              <Label md="3">TXID</Label>
               <Col md="9">
                 <FormGroup>
                   <Input
