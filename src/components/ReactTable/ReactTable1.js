@@ -43,7 +43,7 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 // Our table component
-function Table({ columns, data, openModal }) {
+function Table({ columns, data, openModal, isExport }) {
   const [numberOfRows, setNumberOfRows] = React.useState(10);
   const [pageSelect, handlePageSelect] = React.useState(0);
   // const filterTypes = React.useMemo(
@@ -185,20 +185,22 @@ function Table({ columns, data, openModal }) {
               })}
               placeholder="Rows"
             /> */}
-            <button
-              type="button"
-              onClick={() => openModal({})}
-              className="-btn"
-              style={{
-                width: "60px",
-                height: "35px",
-                padding: "0px",
-                borderRadius: "4px",
-                marginLeft: 20,
-              }}
-            >
-              <i className="tim-icons icon-simple-add" />{" "}
-            </button>
+            {isExport && (
+              <button
+                type="button"
+                onClick={() => openModal({})}
+                className="-btn"
+                style={{
+                  width: "60px",
+                  height: "35px",
+                  padding: "0px",
+                  borderRadius: "4px",
+                  marginLeft: 20,
+                }}
+              >
+                <i className="tim-icons icon-simple-add" />{" "}
+              </button>
+            )}
           </div>
         </div>
         <table {...getTableProps()} className="rt-table">

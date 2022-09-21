@@ -236,7 +236,9 @@ const AppUser = ({ credential }) => {
                     <i className="tim-icons icon-check-2" />
                   </span>
                 ) : (
-                  ""
+                  <span style={{ marginLeft: 5, color: "red" }}>
+                    <i className="tim-icons icon-simple-remove" />
+                  </span>
                 ),
               };
             })
@@ -347,13 +349,25 @@ const AppUser = ({ credential }) => {
                     //   Header: "Address",
                     //   accessor: "address",
                     // },
-                    // {
-                    //   Header: "Wallet",
-                    //   accessor: "wallet",
-                    // },
                     {
                       Header: "Referrer",
                       accessor: "referrer.label",
+                    },
+                    {
+                      Header: "Referrals",
+                      accessor: "referral_count",
+                    },
+                    {
+                      Header: "Referral Volume",
+                      accessor: "referral_volume",
+                    },
+                    {
+                      Header: "Billing Volume",
+                      accessor: "billing_volume",
+                    },
+                    {
+                      Header: "Wallet",
+                      accessor: "wallet",
                     },
                     {
                       Header: "Referral Code",

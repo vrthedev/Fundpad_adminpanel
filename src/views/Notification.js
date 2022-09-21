@@ -82,6 +82,7 @@ const AppUser = ({ credential }) => {
                     <Input
                       multiLine
                       type="text"
+                      placeholder="max 100 characters"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                     />

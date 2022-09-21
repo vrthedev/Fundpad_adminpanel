@@ -19,12 +19,18 @@ import Moment from "moment";
 import Select from "react-select";
 import NotificationAlert from "react-notification-alert";
 import ReactTable from "components/ReactTable/ReactTable1.js";
+import { jsPDF } from "jspdf";
+import wait from "./wait";
+import html2canvas from "html2canvas";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const Pledge = ({ credential }) => {
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
   const [pledges, setPledges] = useState([]);
   const [pledge, setPledge] = useState({});
+  const [isExport, setIsExport] = useState(true);
 
   const { apiConfig, ApiCall } = global;
   const notificationAlertRef = React.useRef(null);
@@ -149,6 +155,42 @@ const Pledge = ({ credential }) => {
     setShow1(false);
   };
 
+  const exportPDF = async () => {
+    setIsExport(false);
+    await wait(10);
+    const pdf = new jsPDF("landscape", "pt", "a4");
+    const data = await html2canvas(document.querySelector("#pdf"));
+    setIsExport(true);
+    const img = data.toDataURL("image/png");
+    const imgProperties = pdf.getImageProperties(img);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("pledge.pdf");
+  };
+
+  const exportExcel = (d) => {
+    const pledgeData = d.map((p) => ({
+      Investor: p.investor.fullname,
+      Referrer: p.referrer.fullname,
+      Amount: p.amount,
+      TXID: p.transaction,
+      Status: p.status,
+      Approved: p.approved,
+    }));
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const wsPledge = XLSX.utils.json_to_sheet(pledgeData);
+    const wb = {
+      Sheets: { pledge: wsPledge },
+      SheetNames: ["pledge"],
+    };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "pledge.xlsx");
+  };
+
   const [investors, setInvestors] = useState([]);
 
   useEffect(() => {
@@ -262,55 +304,110 @@ const Pledge = ({ credential }) => {
       <div className="content">
         <Row>
           <Col xs={12} md={12}>
-            <Card>
+            <Card id="pdf">
               <CardHeader>
-                <CardTitle tag="h3">Pledges</CardTitle>
+                <CardTitle tag="h3">
+                  <span style={{ fontSize: "28px" }}>
+                    <div className="flex-row" style={{ marginLeft: 20 }}>
+                      Pledges
+                      <div style={{ float: "right" }}>
+                        {isExport && (
+                          <>
+                            <span
+                              style={{
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportPDF()}
+                            >
+                              PDF
+                            </span>
+                            <span
+                              style={{
+                                marginLeft: 20,
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportExcel(data)}
+                            >
+                              Excel
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </span>
+                </CardTitle>
               </CardHeader>
               <CardBody>
                 <ReactTable
                   data={data}
+                  isExport={isExport}
                   filterable
                   resizable={false}
-                  columns={[
-                    // {
-                    //   Header: "Project",
-                    //   accessor: "project.name",
-                    // },
-                    {
-                      Header: "Investor",
-                      accessor: "investor.fullname",
-                    },
-                    {
-                      Header: "Referrer",
-                      accessor: "referrer.fullname",
-                    },
-                    {
-                      Header: "Amount",
-                      accessor: "amount",
-                    },
-                    {
-                      Header: "TXID",
-                      accessor: "transaction",
-                    },
-                    {
-                      Header: "Status",
-                      accessor: "status",
-                    },
-                    {
-                      Header: "Approved",
-                      accessor: "approved",
-                    },
-                    // {
-                    //   Header: "CreatedAt",
-                    //   accessor: "createdAt",
-                    // },
-                    {
-                      Header: "Actions",
-                      accessor: "actions",
-                      sortable: false,
-                      filterable: false,
-                    },
-                  ]}
+                  columns={
+                    !isExport
+                      ? [
+                          {
+                            Header: "Investor",
+                            accessor: "investor.fullname",
+                          },
+                          {
+                            Header: "Referrer",
+                            accessor: "referrer.fullname",
+                          },
+                          {
+                            Header: "Amount",
+                            accessor: "amount",
+                          },
+                          {
+                            Header: "TXID",
+                            accessor: "transaction",
+                          },
+                          {
+                            Header: "Status",
+                            accessor: "status",
+                          },
+                          {
+                            Header: "Approved",
+                            accessor: "approved",
+                          },
+                        ]
+                      : [
+                          {
+                            Header: "Investor",
+                            accessor: "investor.fullname",
+                          },
+                          {
+                            Header: "Referrer",
+                            accessor: "referrer.fullname",
+                          },
+                          {
+                            Header: "Amount",
+                            accessor: "amount",
+                          },
+                          {
+                            Header: "TXID",
+                            accessor: "transaction",
+                          },
+                          {
+                            Header: "Status",
+                            accessor: "status",
+                          },
+                          {
+                            Header: "Approved",
+                            accessor: "approved",
+                          },
+                          {
+                            Header: "Actions",
+                            accessor: "actions",
+                            sortable: false,
+                            filterable: false,
+                          },
+                        ]
+                  }
                   defaultPageSize={10}
                   showPaginationTop
                   showPaginationBottom={false}

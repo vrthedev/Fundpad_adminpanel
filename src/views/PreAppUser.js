@@ -221,6 +221,7 @@ const AppUser = ({ credential }) => {
                 <CardTitle tag="h3">Preferred App Users</CardTitle>
               </CardHeader>
               <CardBody>
+                <p>This is only additional percentage, preferred user have already been sent their share from 50% profit share.</p>
                 <ReactTable
                   data={data}
                   filterable

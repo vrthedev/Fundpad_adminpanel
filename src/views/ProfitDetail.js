@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Card, CardBody, CardHeader, CardTitle, Row, Col } from "reactstrap";
+import { Card, CardBody, CardHeader, CardTitle, Row, Col, Button } from "reactstrap";
 import { connect } from "react-redux";
 import NotificationAlert from "react-notification-alert";
 import ReactTable from "components/ReactTable/ReactTable2.js";
@@ -219,6 +219,15 @@ const ProfitDetail = ({ credential }) => {
         <NotificationAlert ref={notificationAlertRef} />
       </div>
       <div className="content">
+        <Button
+          color="btn1 btn-sm mb-3"
+          onClick={() => {
+            window.location.href = "/admin/profit";
+          }}
+        >
+          Go back
+        </Button>
+
         <Row>
           <Col xs={12} md={12}>
             <Card id="pdf">

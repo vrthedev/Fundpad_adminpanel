@@ -16,59 +16,13 @@ import {
   Label,
   Form,
   FormGroup,
-  CustomInput,
 } from "reactstrap";
-import ReactDatetime from "react-datetime";
-
-let chartOption = {
-  maintainAspectRatio: false,
-  legend: {
-    display: false,
-  },
-  tooltips: {
-    backgroundColor: "#f5f5f5",
-    titleFontColor: "#333",
-    bodyFontColor: "#666",
-    bodySpacing: 4,
-    xPadding: 12,
-    mode: "nearest",
-    intersect: 0,
-    position: "nearest",
-  },
-  responsive: true,
-  scales: {
-    yAxes: [
-      {
-        barPercentage: 1.6,
-        gridLines: {
-          drawBorder: false,
-          color: "rgba(29,140,248,0.0)",
-          zeroLineColor: "transparent",
-        },
-        ticks: {
-          suggestedMin: 60,
-          // suggestedMax: 125,
-          padding: 20,
-          fontColor: "#9a9a9a",
-        },
-      },
-    ],
-    xAxes: [
-      {
-        barPercentage: 1.6,
-        gridLines: {
-          drawBorder: false,
-          color: "rgba(29,140,248,0.1)",
-          zeroLineColor: "transparent",
-        },
-        ticks: {
-          padding: 20,
-          fontColor: "#9a9a9a",
-        },
-      },
-    ],
-  },
-};
+import Moment from "moment";
+import { jsPDF } from "jspdf";
+import wait from "./wait";
+import html2canvas from "html2canvas";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const Dashboard = ({ credential }) => {
   const { apiConfig, ApiCall } = global;
@@ -77,6 +31,7 @@ const Dashboard = ({ credential }) => {
   const [profits, setProfits] = useState([]);
   const [show, setShow] = useState(false);
   const [project, setProject] = useState({});
+  const [isExport, setIsExport] = useState(true);
 
   let total_investor_payouts = 0;
   let total_referral_payouts = 0;
@@ -150,42 +105,6 @@ const Dashboard = ({ credential }) => {
       }
     })();
   }, []);
-
-  const profitChartData = {
-    data: (canvas) => {
-      let ctx = canvas.getContext("2d");
-
-      let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-      gradientStroke.addColorStop(1, "rgba(29,140,248,0.2)");
-      gradientStroke.addColorStop(0.4, "rgba(29,140,248,0.0)");
-      gradientStroke.addColorStop(0, "rgba(29,140,248,0)"); //blue colors
-
-      return {
-        labels: profits.map((p) => p.name),
-        datasets: [
-          {
-            label: "Data",
-            fill: true,
-            backgroundColor: gradientStroke,
-            borderColor: "#1f8ef1",
-            borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            pointBackgroundColor: "#1f8ef1",
-            pointBorderColor: "rgba(255,255,255,0)",
-            pointHoverBackgroundColor: "#1f8ef1",
-            pointBorderWidth: 20,
-            pointHoverRadius: 4,
-            pointHoverBorderWidth: 15,
-            pointRadius: 4,
-            data: profits.map((p) => p.percentage || 0),
-          },
-        ],
-      };
-    },
-    options: chartOption,
-  };
 
   const barChartData = {
     data: (canvas) => {
@@ -274,107 +193,6 @@ const Dashboard = ({ credential }) => {
     },
   };
 
-  const lineChartData = {
-    data: (canvas) => {
-      let ctx = canvas.getContext("2d");
-
-      let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-      gradientStroke.addColorStop(1, "rgba(66,134,121,0.15)");
-      gradientStroke.addColorStop(0.4, "rgba(66,134,121,0.0)"); //green colors
-      gradientStroke.addColorStop(0, "rgba(66,134,121,0)"); //green colors
-
-      return {
-        labels: profits.map((p) => p.name),
-        datasets: [
-          {
-            label: "Referral Payouts",
-            fill: true,
-            backgroundColor: gradientStroke,
-            borderColor: "#00d6b4",
-            borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            pointBackgroundColor: "#00d6b4",
-            pointBorderColor: "rgba(255,255,255,0)",
-            pointHoverBackgroundColor: "#00d6b4",
-            pointBorderWidth: 20,
-            pointHoverRadius: 4,
-            pointHoverBorderWidth: 15,
-            pointRadius: 4,
-            data: profits.map((p) => p.referral_payouts || 0),
-          },
-          {
-            label: "Investor Payouts",
-            fill: true,
-            backgroundColor: gradientStroke,
-            borderColor: "#ed4343",
-            borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            pointBackgroundColor: "#ed4343",
-            pointBorderColor: "rgba(255,255,255,0)",
-            pointHoverBackgroundColor: "#00d6b4",
-            pointBorderWidth: 20,
-            pointHoverRadius: 4,
-            pointHoverBorderWidth: 15,
-            pointRadius: 4,
-            data: profits.map((p) => p.investor_payouts || 0),
-          },
-        ],
-      };
-    },
-    options: {
-      maintainAspectRatio: false,
-      legend: {
-        display: false,
-      },
-      tooltips: {
-        backgroundColor: "#f5f5f5",
-        titleFontColor: "#333",
-        bodyFontColor: "#666",
-        bodySpacing: 4,
-        xPadding: 12,
-        mode: "nearest",
-        intersect: 0,
-        position: "nearest",
-      },
-      responsive: true,
-      scales: {
-        yAxes: [
-          {
-            barPercentage: 1.6,
-            gridLines: {
-              drawBorder: false,
-              color: "rgba(29,140,248,0.0)",
-              zeroLineColor: "transparent",
-            },
-            ticks: {
-              suggestedMin: 50,
-              // suggestedMax: 125,
-              padding: 20,
-              fontColor: "#9e9e9e",
-            },
-          },
-        ],
-        xAxes: [
-          {
-            barPercentage: 1.6,
-            gridLines: {
-              drawBorder: false,
-              color: "rgba(0,242,195,0.1)",
-              zeroLineColor: "transparent",
-            },
-            ticks: {
-              padding: 20,
-              fontColor: "#9e9e9e",
-            },
-          },
-        ],
-      },
-    },
-  };
-
   const chartData = {
     data: {
       labels: ["Pledged amount", ""],
@@ -439,6 +257,7 @@ const Dashboard = ({ credential }) => {
   const closeModal = () => {
     setShow(false);
   };
+
   const save = async (pro) => {
     try {
       const response = await ApiCall(
@@ -459,12 +278,91 @@ const Dashboard = ({ credential }) => {
     setShow(false);
   };
 
+  const exportPDF = async () => {
+    setIsExport(false);
+    await wait(10);
+    const pdf = new jsPDF("landscape", "pt", "a4");
+    const data = await html2canvas(document.querySelector("#pdf"));
+    setIsExport(true);
+    const img = data.toDataURL("image/png");
+    const imgProperties = pdf.getImageProperties(img);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("dashboard.pdf");
+  };
+
+  const exportExcel = (d) => {
+    console.log(profits, "-------profits");
+    const excelData = [
+      {
+        "Registerd App Users": d.app_users,
+        "Pledges (no.)": d.pledges_num,
+        "Active App Users": d.active_users,
+        "TXID Submitted (no.)": d.received_num,
+        "Pledges ($)": d.pledges_total + "$",
+        "Active Users": d.received_total + "$",
+        "Target Amount": d.fund_target + "$",
+        "Pledged amount": d.fund_raised + "$",
+        "Pledged Percentage":
+          Math.round((d.fund_raised / d.fund_target) * 100) + "%",
+      },
+    ];
+    const profitData = profits.map((p) => ({
+      "Profit Name": p.name,
+      Percentage: p.percentage + "%",
+      "Investor Payouts": p.investor_payouts + "$",
+      "Referral Payouts": p.referral_payouts + "$",
+      "Additional Payouts": p.additional_payouts + "$",
+      CreatedAt: Moment(p.createdAt).format("DD/MM/YYYY hh:mm:ss"),
+    }));
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const wsDash = XLSX.utils.json_to_sheet(excelData);
+    const wsProfit = XLSX.utils.json_to_sheet(profitData);
+    const wb = {
+      Sheets: { dashboard: wsDash, profit: wsProfit },
+      SheetNames: ["dashboard", "profit"],
+    };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "dashboard.xlsx");
+  };
+
   return (
     <>
       <div className="rna-container">
         <NotificationAlert ref={notificationAlertRef} />
       </div>
-      <div className="content">
+      <div className="content" id="pdf">
+        <div style={{ float: "right" }}>
+          {isExport && (
+            <>
+              <span
+                style={{
+                  cursor: "pointer",
+                  fontSize: 16,
+                  color: "rgba(34, 42, 66, 0.7)",
+                }}
+                onClick={() => exportPDF()}
+              >
+                PDF
+              </span>
+              <span
+                style={{
+                  marginLeft: 20,
+                  cursor: "pointer",
+                  fontSize: 16,
+                  color: "rgba(34, 42, 66, 0.7)",
+                }}
+                onClick={() => exportExcel(data)}
+              >
+                Excel
+              </span>
+            </>
+          )}
+        </div>
         <Row>
           <Col lg="8">
             <Row>
@@ -597,7 +495,6 @@ const Dashboard = ({ credential }) => {
                   </CardFooter>
                 </Card>
               </Col>
-
               <Col lg="4" md="6">
                 <Card className="card-stats">
                   <CardBody>
@@ -666,13 +563,15 @@ const Dashboard = ({ credential }) => {
                 (data.fund_raised / data.fund_target) * 100
               )} %`}</h4>
             </div>
-            <button
-              onClick={() => {
-                setShow(true);
-              }}
-            >
-              Edit{" "}
-            </button>
+            {isExport && (
+              <button
+                onClick={() => {
+                  setShow(true);
+                }}
+              >
+                Edit{" "}
+              </button>
+            )}
           </Col>
         </Row>
       </div>
