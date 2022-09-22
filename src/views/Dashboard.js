@@ -254,6 +254,67 @@ const Dashboard = ({ credential }) => {
     },
   };
 
+  const chartData1 = {
+    data: {
+      labels: ["Confirmed amount", ""],
+      datasets: [
+        {
+          label: "Emails",
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          backgroundColor: ["#2a84e9", "#c7bfbf"],
+          borderWidth: 0,
+          data: [data.received_total, data.fund_target - data.received_total],
+        },
+      ],
+    },
+    options: {
+      cutoutPercentage: 70,
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "#f5f5f5",
+        titleFontColor: "#333",
+        bodyFontColor: "#666",
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest",
+      },
+      scales: {
+        yAxes: [
+          {
+            display: 0,
+            ticks: {
+              display: false,
+            },
+            gridLines: {
+              drawBorder: false,
+              zeroLineColor: "transparent",
+              color: "rgba(255,255,255,0.05)",
+            },
+          },
+        ],
+        xAxes: [
+          {
+            display: 0,
+            barPercentage: 1.6,
+            gridLines: {
+              drawBorder: false,
+              color: "rgba(255,255,255,0.1)",
+              zeroLineColor: "transparent",
+            },
+            ticks: {
+              display: false,
+            },
+          },
+        ],
+      },
+    },
+  };
+
   const closeModal = () => {
     setShow(false);
   };
@@ -293,7 +354,6 @@ const Dashboard = ({ credential }) => {
   };
 
   const exportExcel = (d) => {
-    console.log(profits, "-------profits");
     const excelData = [
       {
         "Registerd App Users": d.app_users,
@@ -565,6 +625,7 @@ const Dashboard = ({ credential }) => {
             </div>
             {isExport && (
               <button
+                className="btn_edit"
                 onClick={() => {
                   setShow(true);
                 }}
@@ -572,6 +633,19 @@ const Dashboard = ({ credential }) => {
                 Edit{" "}
               </button>
             )}
+            <div className="chart-area" style={{ marginTop: 20 }}>
+              <Pie data={chartData1.data} options={chartData1.options} />
+            </div>
+            <div style={{ marginTop: 10 }}>
+              <h4
+                style={{ color: "#808080" }}
+              >{`Target Amount: ${data.fund_target} $`}</h4>
+            </div>
+            <div style={{ marginTop: 0 }}>
+              <h4
+                style={{ color: "#808080" }}
+              >{`Confirmed amount: ${data.received_total} $`}</h4>
+            </div>
           </Col>
         </Row>
       </div>

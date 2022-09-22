@@ -44,7 +44,10 @@ fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 // Our table component
 function Table({ columns, data, openModal, isExport, selRow }) {
-  const [numberOfRows, setNumberOfRows] = React.useState(10);
+  const [numberOfRows, setNumberOfRows] = React.useState({
+    value: 10,
+    label: 10,
+  });
   const [pageSelect, handlePageSelect] = React.useState(0);
   // const filterTypes = React.useMemo(
   //   () => ({
@@ -115,96 +118,70 @@ function Table({ columns, data, openModal, isExport, selRow }) {
       <div className="ReactTable -striped -highlight">
         <div className="pagination-top">
           <div className="-pagination" style={{ float: "right" }}>
-            <div className="-previous">
-              {/* <button
-                type="button"
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-                className="-btn"
-                style={{
-                  width: "35px",
-                  height: "35px",
-                  padding: "0px",
-                  borderRadius: "20px",
-                }}
-              >
-                <i className="tim-icons icon-minimal-left" />
-              </button> */}
-              {/* <span onClick={() => previousPage()} disabled={!canPreviousPage}>
-                <i className="tim-icons icon-minimal-left" />
-              </span> */}
-            </div>
-            {/* <div className="-center flex-nowrap">
-              <Select
-                className="react-select info mx-1 w-90"
-                classNamePrefix="react-select"
-                name="singleSelect"
-                value={pageSelect}
-                onChange={(value) => {
-                  gotoPage(value.value);
-                  handlePageSelect(value);
-                }}
-                options={pageSelectData.map((prop, key) => {
-                  return {
-                    value: key,
-                    label: key + 1,
-                  };
-                })}
-                placeholder="Page"
-              />
-            </div> */}
-            {/* <div className="-center flex-nowrap">
-              <button
-                type="button"
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-                className="-btn"
-                style={{
-                  width: "35px",
-                  height: "35px",
-                  padding: "0px",
-                  borderRadius: "20px",
-                }}
-              >
-                <i className="tim-icons icon-minimal-right" />
-              </button>
-              <span style={{ width: 160, color: "#1d8cf8" }}>
-                Rows per page
-              </span>
-              <Select
-                className="react-select info"
-                classNamePrefix="react-select"
-                name="singleSelect"
-                style={{ width: 80, border: 0 }}
-                value={numberOfRows}
-                onChange={(value) => {
-                  console.log(value);
-                  setPageSize(value.value);
-                  setNumberOfRows(value);
-                }}
-                options={numberOfRowsData.map((prop) => {
-                  return {
-                    value: prop,
-                    label: prop,
-                  };
-                })}
-                placeholder=""
-              />
-              <span
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-                style={{ color: "#1d8cf8", marginLeft: "20px" }}
-              >
-                <i className="tim-icons icon-minimal-left" />
-              </span>
-              <span
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-                style={{ color: "#1d8cf8", marginLeft: "10px" }}
-              >
-                <i className="tim-icons icon-minimal-right" />
-              </span>
-            </div> */}
+            <span className="row_per_pages">Rows per page:</span>
+            <Select
+              styles={{
+                control: (provided, state) => ({
+                  ...provided,
+                  boxShadow: "none",
+                  // border: state.isFocused && "none",
+                  border: "none",
+                  "&:active": {
+                    borderColor: "#296ef6",
+                  },
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isFocused && "lightgray",
+                  color: state.isFocused && "#296ef6",
+                }),
+                indicatorSeparator: () => ({ display: "none" }),
+              }}
+              className="sel_rows"
+              name="singleSelect"
+              style={{ width: 80 }}
+              value={numberOfRows}
+              onChange={(value) => {
+                console.log(value);
+                setPageSize(value.value);
+                setNumberOfRows(value);
+                handlePageSelect(0);
+              }}
+              options={numberOfRowsData.map((prop) => {
+                return {
+                  value: prop,
+                  label: prop,
+                };
+              })}
+              placeholder=""
+            />
+            {/* <span style={{ padding: 10 }}>
+              {numberOfRows.value * pageSelect + 1}-
+              {numberOfRows.value * (pageSelect + 1) > data.length
+                ? data.length
+                : numberOfRows.value * (pageSelect + 1)}{" "}
+              of {data.length}
+            </span> */}
+            <button
+              onClick={() => {
+                handlePageSelect(pageSelect - 1);
+                previousPage();
+              }}
+              disabled={!canPreviousPage}
+              className="next_prev_btn"
+            >
+              <i className="tim-icons icon-minimal-left" />
+            </button>
+            <button
+              onClick={() => {
+                nextPage();
+                handlePageSelect(pageSelect + 1);
+              }}
+              disabled={!canNextPage}
+              className="next_prev_btn"
+            >
+              <i className="tim-icons icon-minimal-right" />
+            </button>
             {isExport && (
               <button
                 type="button"

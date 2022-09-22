@@ -21,6 +21,7 @@ import "assets/demo/demo.css";
 import { MoralisProvider } from "react-moralis";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+import "./assets/css/custom.css";
 
 const mapStateToProps = (state) => ({
   credential: state.LoginReducer,

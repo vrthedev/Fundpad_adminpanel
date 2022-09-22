@@ -224,225 +224,35 @@ const AppUserDetail = ({ credential, id }) => {
                   <h4>{`Email: ${user.email || ""}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Wallet: ${user.wallet || ""}`}</h4>
-                </Row>
-                <Row style={{ marginLeft: 5 }}>
                   <h4>{`Phone: (${user.dialcode || ""})${
                     user.phone || ""
                   }`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Address: ${user.address || ""}`}</h4>
+                  <h4>{`Payout Wallet: ${user.wallet || ""}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referrer: ${getUserName(user.referrer_id) || ""}`}</h4>
+                  <h4>{`Pledge: ${user.pledged_amount || ""}$`}</h4>
                 </Row>
+                <Row style={{ marginLeft: 5 }}>
+                  <h4>{`Account Balance: ${user.confirmed_amount || ""}$`}</h4>
+                </Row>
+                <Row style={{ marginLeft: 5 }}>
+                  <h4>{`Total Payout: ${user.investor_payouts || ""}$`}</h4>
+                </Row>
+
                 <Row style={{ marginLeft: 5 }}>
                   <h4>{`Referral code: ${user.referral_code || ""}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Pledge Sum: ${userinfo1.pledges_sum}$`}</h4>
+                  <h4>{`Referrals: ${user.referral_count}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Investor Payout Sum: ${userinfo1.investor_payout_sum}$`}</h4>
+                  <h4>{`Billing Volume: ${user.billing_volume}$`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referral Payout Sum: ${userinfo1.referral_payout_sum}$`}</h4>
+                  <h4>{`Referral Volume: ${user.referral_volume}$`}</h4>
                 </Row>
-                <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referral Payout Sum: ${userinfo1.additional_payout_sum}$`}</h4>
-                </Row>
-                {/* <div style={{ marginTop: 20 }}>
-                  {userinfo1.pledges ? (
-                    <ReactTable
-                      data={userinfo1.pledges}
-                      filterable
-                      title={"Pledges: " + userinfo1.pledges_sum + "$"}
-                      isExport={isExport}
-                      resizable={false}
-                      columns={[
-                        {
-                          Header: "Investor",
-                          accessor: "investor_name",
-                        },
-                        {
-                          Header: "Referrer",
-                          accessor: "referrer_name",
-                        },
-                        {
-                          Header: "Amount",
-                          accessor: "amount",
-                        },
-                        {
-                          Header: "TXID",
-                          accessor: "transaction",
-                        },
-                        {
-                          Header: "Status",
-                          accessor: "status",
-                        },
-                        {
-                          Header: "Approved",
-                          accessor: "approved",
-                        },
-                        {
-                          Header: "CreatedAt",
-                          accessor: "createdAt",
-                        },
-                      ]}
-                      defaultPageSize={10}
-                      showPaginationTop
-                      showPaginationBottom={false}
-                      className="-striped -highlight"
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div> */}
-                {/* <div style={{ marginTop: 20 }}>
-                  {userinfo1.investor_payouts ? (
-                    <ReactTable
-                      data={userinfo1.investor_payouts}
-                      isProfit={true}
-                      isExport={isExport}
-                      title={
-                        "Investor payouts: " +
-                        userinfo1.investor_payout_sum +
-                        "$"
-                      }
-                      filterable
-                      resizable={false}
-                      columns={[
-                        {
-                          Header: "Profit Name",
-                          accessor: "profit_name",
-                        },
-                        {
-                          Header: "User Name",
-                          accessor: "username",
-                        },
-                        {
-                          Header: "Invest Amount",
-                          accessor: "base_amount",
-                        },
-                        {
-                          Header: "Percentage",
-                          accessor: "percentage",
-                        },
-                        {
-                          Header: "Payout",
-                          accessor: "amount",
-                        },
-                        {
-                          Header: "CreatedAt",
-                          accessor: "createdAt",
-                        },
-                      ]}
-                      defaultPageSize={10}
-                      showPaginationTop
-                      showPaginationBottom={false}
-                      className="-striped -highlight"
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div>
-                <div style={{ marginTop: 20 }}>
-                  {userinfo1.referral_payouts ? (
-                    <ReactTable
-                      data={userinfo1.referral_payouts}
-                      isProfit={true}
-                      isExport={isExport}
-                      title={
-                        "Referral payouts: " +
-                        userinfo1.referral_payout_sum +
-                        "$"
-                      }
-                      filterable
-                      resizable={false}
-                      columns={[
-                        {
-                          Header: "Profit Name",
-                          accessor: "profit_name",
-                        },
-                        {
-                          Header: "User Name",
-                          accessor: "username",
-                        },
-                        {
-                          Header: "Referral Invest Amount",
-                          accessor: "base_amount",
-                        },
-                        {
-                          Header: "Percentage",
-                          accessor: "percentage",
-                        },
-                        {
-                          Header: "Payout",
-                          accessor: "amount",
-                        },
-                        {
-                          Header: "CreatedAt",
-                          accessor: "createdAt",
-                        },
-                      ]}
-                      defaultPageSize={10}
-                      showPaginationTop
-                      showPaginationBottom={false}
-                      className="-striped -highlight"
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div> */}
-                {/* <div style={{ marginTop: 20 }}>
-                  {userinfo1.additional_payouts ? (
-                    <ReactTable
-                      data={userinfo1.additional_payouts}
-                      isProfit={true}
-                      isExport={isExport}
-                      title={
-                        "Preferred User Payouts: " +
-                        userinfo1.additional_payout_sum +
-                        "$"
-                      }
-                      filterable
-                      resizable={false}
-                      columns={[
-                        {
-                          Header: "Profit Name",
-                          accessor: "profit_name",
-                        },
-                        {
-                          Header: "User Name",
-                          accessor: "username",
-                        },
-                        {
-                          Header: "Invest Amount",
-                          accessor: "base_amount",
-                        },
-                        {
-                          Header: "Percentage",
-                          accessor: "percentage",
-                        },
-                        {
-                          Header: "Payout",
-                          accessor: "amount",
-                        },
-                        {
-                          Header: "CreatedAt",
-                          accessor: "createdAt",
-                        },
-                      ]}
-                      defaultPageSize={10}
-                      showPaginationTop
-                      showPaginationBottom={false}
-                      className="-striped -highlight"
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div> */}
               </CardBody>
             </Card>
           </Col>

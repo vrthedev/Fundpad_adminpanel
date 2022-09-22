@@ -45,7 +45,10 @@ fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 // Our table component
 function Table({ columns, data, isProfit, title, isExport }) {
-  const [numberOfRows, setNumberOfRows] = React.useState(10);
+  const [numberOfRows, setNumberOfRows] = React.useState({
+    value: 10,
+    label: 10,
+  });
   const [pageSelect, handlePageSelect] = React.useState(0);
 
   const defaultColumn = React.useMemo(() => ({}), []);
@@ -90,6 +93,70 @@ function Table({ columns, data, isProfit, title, isExport }) {
           <span style={{ float: "left", marginLeft: 5 }}>
             <h4>{title}</h4>
           </span>
+          <span className="row_per_pages">Rows per page:</span>
+          <Select
+            styles={{
+              control: (provided, state) => ({
+                ...provided,
+                boxShadow: "none",
+                // border: state.isFocused && "none",
+                border: "none",
+                "&:active": {
+                  borderColor: "#296ef6",
+                },
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isFocused && "lightgray",
+                color: state.isFocused && "#296ef6",
+              }),
+              indicatorSeparator: () => ({ display: "none" }),
+            }}
+            className="sel_rows"
+            name="singleSelect"
+            style={{ width: 80 }}
+            value={numberOfRows}
+            onChange={(value) => {
+              console.log(value);
+              setPageSize(value.value);
+              setNumberOfRows(value);
+              handlePageSelect(0);
+            }}
+            options={numberOfRowsData.map((prop) => {
+              return {
+                value: prop,
+                label: prop,
+              };
+            })}
+            placeholder=""
+          />
+          {/* <span style={{ padding: 10 }}>
+              {numberOfRows.value * pageSelect + 1}-
+              {numberOfRows.value * (pageSelect + 1) > data.length
+                ? data.length
+                : numberOfRows.value * (pageSelect + 1)}{" "}
+              of {data.length}
+            </span> */}
+          <button
+            onClick={() => {
+              handlePageSelect(pageSelect - 1);
+              previousPage();
+            }}
+            disabled={!canPreviousPage}
+            className="next_prev_btn"
+          >
+            <i className="tim-icons icon-minimal-left" />
+          </button>
+          <button
+            onClick={() => {
+              nextPage();
+              handlePageSelect(pageSelect + 1);
+            }}
+            disabled={!canNextPage}
+            className="next_prev_btn"
+          >
+            <i className="tim-icons icon-minimal-right" />
+          </button>
           {isExport && (
             <div className="-pagination" style={{ float: "right" }}>
               {isProfit ? (
