@@ -43,7 +43,7 @@ function fuzzyTextFilterFn(rows, id, filterValue) {
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 // Our table component
-function Table({ columns, data, openModal, isExport }) {
+function Table({ columns, data, openModal, isExport, selRow }) {
   const [numberOfRows, setNumberOfRows] = React.useState(10);
   const [pageSelect, handlePageSelect] = React.useState(0);
   // const filterTypes = React.useMemo(
@@ -228,26 +228,35 @@ function Table({ columns, data, openModal, isExport }) {
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()} className="rt-tr">
                 {headerGroup.headers.map((column, key) => (
-                  <th
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className={classnames("rt-th rt-resizable-header", {
-                      "-cursor-pointer": headerGroup.headers.length - 1 !== key,
-                      "-sort-asc": column.isSorted && !column.isSortedDesc,
-                      "-sort-desc": column.isSorted && column.isSortedDesc,
-                    })}
-                  >
-                    <div className="rt-resizable-header-content">
-                      {column.render("Header")}
-                    </div>
-                    {/* Render the columns filter UI */}
-                    {/* <div>
+                  <>
+                    {key === 9 || key === 10 ? (
+                      <></>
+                    ) : (
+                      <th
+                        {...column.getHeaderProps(
+                          column.getSortByToggleProps()
+                        )}
+                        className={classnames("rt-th rt-resizable-header", {
+                          "-cursor-pointer":
+                            headerGroup.headers.length - 1 !== key,
+                          "-sort-asc": column.isSorted && !column.isSortedDesc,
+                          "-sort-desc": column.isSorted && column.isSortedDesc,
+                        })}
+                      >
+                        <div className="rt-resizable-header-content">
+                          {column.render("Header")}
+                        </div>
+                        {/* Render the columns filter UI */}
+                        {/* <div>
                       {headerGroup.headers.length - 1 === key
                         ? null
                         : column.canFilter
                         ? column.render("Filter")
                         : null}
                     </div> */}
-                  </th>
+                      </th>
+                    )}
+                  </>
                 ))}
               </tr>
             ))}
@@ -256,19 +265,41 @@ function Table({ columns, data, openModal, isExport }) {
             {page.map((row, i) => {
               prepareRow(row);
               return (
+                // <tr
+                //   {...row.getRowProps()}
+                //   className={classnames(
+                //     "rt-tr",
+                //     { " -odd": i % 2 === 0 },
+                //     { " -even": i % 2 === 1 }
+                //   )}
+                // >
                 <tr
                   {...row.getRowProps()}
                   className={classnames(
                     "rt-tr",
-                    { " -odd": i % 2 === 0 },
-                    { " -even": i % 2 === 1 }
+                    { " -active": row.cells[9].value === 1 },
+                    { " -odd": i % 2 === 0 && !row.isis === 0 },
+                    { " -even": i % 2 === 1 && !row.isis === 0 }
                   )}
+                  // onClick={() => selRow(row)}
                 >
                   {row.cells.map((cell, index) => {
                     return (
-                      <td {...cell.getCellProps()} className="rt-td">
-                        {cell.render("Cell")}
-                      </td>
+                      <>
+                        {index === 9 || index === 10 ? (
+                          <></>
+                        ) : (
+                          <td
+                            {...cell.getCellProps()}
+                            className="rt-td"
+                            onClick={() => {
+                              if (index !== 11) selRow(row);
+                            }}
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        )}
+                      </>
                       // <>
                       //   {index === 3 ? (
                       //     <td {...cell.getCellProps()} className="rt-td">

@@ -324,6 +324,9 @@
 .ReactTable.-striped .rt-tr.-odd {
   background: rgba(0, 0, 0, 0.03);
 }
+.ReactTable.-striped .rt-tr.-active {
+  background: '#99f4b0';
+}
 .ReactTable.-highlight .rt-tbody .rt-tr:not(.-padRow):hover {
   background: rgba(0, 0, 0, 0.05);
 }

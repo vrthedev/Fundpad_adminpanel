@@ -218,41 +218,27 @@ const AppUserDetail = ({ credential, id }) => {
               </CardHeader>
               <CardBody>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Name: ${user.fullname || ""}`}</h4>
+                  <h4>{`Name: ${user.fullname}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Email: ${user.email || ""}`}</h4>
+                  <h4>{`Email: ${user.email}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Wallet: ${user.wallet || ""}`}</h4>
+                  <h4>{`Wallet: ${user.wallet}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Phone: (${user.dialcode || ""})${
-                    user.phone || ""
-                  }`}</h4>
+                  <h4>{`Phone: (${user.dialcode})${user.phone}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Address: ${user.address || ""}`}</h4>
+                  <h4>{`Address: ${user.address}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referrer: ${getUserName(user.referrer_id) || ""}`}</h4>
+                  <h4>{`Referrer: ${getUserName(user.referrer_id)}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referral code: ${user.referral_code || ""}`}</h4>
+                  <h4>{`Referral code: ${user.referral_code}`}</h4>
                 </Row>
-                <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Pledge Sum: ${userinfo1.pledges_sum}$`}</h4>
-                </Row>
-                <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Investor Payout Sum: ${userinfo1.investor_payout_sum}$`}</h4>
-                </Row>
-                <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referral Payout Sum: ${userinfo1.referral_payout_sum}$`}</h4>
-                </Row>
-                <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referral Payout Sum: ${userinfo1.additional_payout_sum}$`}</h4>
-                </Row>
-                {/* <div style={{ marginTop: 20 }}>
+                <div style={{ marginTop: 20 }}>
                   {userinfo1.pledges ? (
                     <ReactTable
                       data={userinfo1.pledges}
@@ -298,8 +284,8 @@ const AppUserDetail = ({ credential, id }) => {
                   ) : (
                     <></>
                   )}
-                </div> */}
-                {/* <div style={{ marginTop: 20 }}>
+                </div>
+                <div style={{ marginTop: 20 }}>
                   {userinfo1.investor_payouts ? (
                     <ReactTable
                       data={userinfo1.investor_payouts}
@@ -394,8 +380,8 @@ const AppUserDetail = ({ credential, id }) => {
                   ) : (
                     <></>
                   )}
-                </div> */}
-                {/* <div style={{ marginTop: 20 }}>
+                </div>
+                <div style={{ marginTop: 20 }}>
                   {userinfo1.additional_payouts ? (
                     <ReactTable
                       data={userinfo1.additional_payouts}
@@ -442,7 +428,7 @@ const AppUserDetail = ({ credential, id }) => {
                   ) : (
                     <></>
                   )}
-                </div> */}
+                </div>
               </CardBody>
             </Card>
           </Col>

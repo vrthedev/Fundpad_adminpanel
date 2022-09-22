@@ -20,7 +20,14 @@ import {
 import Moment from "moment";
 import Select from "react-select";
 import NotificationAlert from "react-notification-alert";
-import ReactTable from "components/ReactTable/ReactTable.js";
+import ReactTable11 from "components/ReactTable/ReactTable11.js";
+import AppUserDetail from "./AppUserDetail";
+import { jsPDF } from "jspdf";
+import wait from "./wait";
+import html2canvas from "html2canvas";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
+import "../assets/css/custom.css";
 
 const AppUser = ({ credential }) => {
   const [users, setUsers] = useState([]);
@@ -29,6 +36,7 @@ const AppUser = ({ credential }) => {
   const [show2, setShow2] = useState(false);
   const [show3, setShow3] = useState(false);
   const [user, setUser] = useState({});
+  const [isExport, setIsExport] = useState(true);
   const { apiConfig, ApiCall } = global;
   const notificationAlertRef = React.useRef(null);
 
@@ -62,6 +70,7 @@ const AppUser = ({ credential }) => {
   const showChange = (data) => {
     setUser({ ...data, password: "", password1: "" });
     setShow3(true);
+    closeDetail();
   };
 
   const changePassword = () => {
@@ -169,6 +178,11 @@ const AppUser = ({ credential }) => {
     setShow(false);
   };
 
+  const selRow = (data) => {
+    console.log(data.values, "---------sel row in reacttable");
+    showDetail(data.values);
+  };
+
   const remove = async (data) => {
     try {
       const response = await ApiCall(
@@ -212,6 +226,45 @@ const AppUser = ({ credential }) => {
     setShow1(false);
   };
 
+  const exportPDF = async () => {
+    setIsExport(false);
+    await wait(10);
+    const pdf = new jsPDF("landscape", "pt", "a4");
+    const data = await html2canvas(document.querySelector("#pdf"));
+    setIsExport(true);
+    const img = data.toDataURL("image/png");
+    const imgProperties = pdf.getImageProperties(img);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("appuser.pdf");
+  };
+
+  const exportExcel = (d) => {
+    const appuserData = d.map((p) => ({
+      Name: p.fullname,
+      Email: p.email,
+      Referrer: p.referrer.label,
+      Referrals: p.referral_count,
+      "Referral Volume": p.referral_volume,
+      "Billing Volume": p.billing_volume,
+      Wallet: p.wallet,
+      "Referral Code": p.referral_code,
+      Active: p.isActiveUser,
+    }));
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const wsAppuser = XLSX.utils.json_to_sheet(appuserData);
+    const wb = {
+      Sheets: { appuser: wsAppuser },
+      SheetNames: ["appuser"],
+    };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "appuser.xlsx");
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -240,6 +293,7 @@ const AppUser = ({ credential }) => {
                     <i className="tim-icons icon-simple-remove" />
                   </span>
                 ),
+                isis: p.isActiveUser ? 1 : 0,
               };
             })
           );
@@ -271,7 +325,7 @@ const AppUser = ({ credential }) => {
             >
               <i class="tim-icons icon-key-25" aria-hidden="false"></i>
             </Button>{" "}
-            {/* <Button
+            <Button
               color="warning"
               size="sm"
               className={classNames("btn-icon btn-link like btn-neutral")}
@@ -279,8 +333,8 @@ const AppUser = ({ credential }) => {
               style={{ opacity: 0.7 }}
             >
               <i class="fa fa-eye" aria-hidden="false"></i>
-            </Button>{" "} */}
-            <Link to={`/admin/appuserDetail/${prop._id}`}>
+            </Button>{" "}
+            {/* <Link to={`/admin/appuserDetail/${prop._id}`}>
               <Button
                 color="warning"
                 size="sm"
@@ -289,7 +343,7 @@ const AppUser = ({ credential }) => {
               >
                 <i class="fa fa-eye" aria-hidden="false"></i>
               </Button>{" "}
-            </Link>
+            </Link> */}
             <Button
               onClick={() => openModal(prop)}
               color="warning"
@@ -323,71 +377,155 @@ const AppUser = ({ credential }) => {
       <div className="content">
         <Row>
           <Col xs={12} md={12}>
-            <Card>
+            <Card id="pdf">
               <CardHeader>
-                <CardTitle tag="h3">App Users</CardTitle>
+                <CardTitle tag="h3">
+                  <span style={{ fontSize: "28px" }}>
+                    <div className="flex-row" style={{ marginLeft: 20 }}>
+                      App Users
+                      <div style={{ float: "right" }}>
+                        {isExport && (
+                          <>
+                            <span
+                              style={{
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportPDF()}
+                            >
+                              PDF
+                            </span>
+                            <span
+                              style={{
+                                marginLeft: 20,
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportExcel(data)}
+                            >
+                              Excel
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </span>
+                </CardTitle>
               </CardHeader>
               <CardBody>
-                <ReactTable
+                <ReactTable11
                   data={data}
+                  isExport={isExport}
                   filterable
                   resizable={false}
-                  columns={[
-                    {
-                      Header: "Name",
-                      accessor: "fullname",
-                    },
-                    {
-                      Header: "Email",
-                      accessor: "email",
-                    },
-                    // {
-                    //   Header: "Phone",
-                    //   accessor: "phone",
-                    // },
-                    // {
-                    //   Header: "Address",
-                    //   accessor: "address",
-                    // },
-                    {
-                      Header: "Referrer",
-                      accessor: "referrer.label",
-                    },
-                    {
-                      Header: "Referrals",
-                      accessor: "referral_count",
-                    },
-                    {
-                      Header: "Referral Volume",
-                      accessor: "referral_volume",
-                    },
-                    {
-                      Header: "Billing Volume",
-                      accessor: "billing_volume",
-                    },
-                    {
-                      Header: "Wallet",
-                      accessor: "wallet",
-                    },
-                    {
-                      Header: "Referral Code",
-                      accessor: "referral_code",
-                    },
-                    {
-                      Header: "Active",
-                      accessor: "isActiveUser",
-                    },
-                    // {
-                    //   Header: "CreatedAt",
-                    //   accessor: "createdAt",
-                    // },
-                    {
-                      Header: "Actions",
-                      accessor: "actions",
-                      sortable: false,
-                      filterable: false,
-                    },
-                  ]}
+                  selRow={selRow}
+                  columns={
+                    isExport
+                      ? [
+                          {
+                            Header: "Name",
+                            accessor: "fullname",
+                          },
+                          {
+                            Header: "Email",
+                            accessor: "email",
+                          },
+                          // {
+                          //   Header: "Phone",
+                          //   accessor: "phone",
+                          // },
+                          // {
+                          //   Header: "Address",
+                          //   accessor: "address",
+                          // },
+                          {
+                            Header: "Referrer",
+                            accessor: "referrer.label",
+                          },
+                          {
+                            Header: "Referrals",
+                            accessor: "referral_count",
+                          },
+                          {
+                            Header: "Referral Volume",
+                            accessor: "referral_volume",
+                          },
+                          {
+                            Header: "Billing Volume",
+                            accessor: "billing_volume",
+                          },
+                          {
+                            Header: "Wallet",
+                            accessor: "wallet",
+                          },
+                          {
+                            Header: "Referral Code",
+                            accessor: "referral_code",
+                          },
+                          {
+                            Header: "Active",
+                            accessor: "isActiveUser",
+                          },
+                          {
+                            Header: "isis",
+                            accessor: "isis",
+                          },
+                          {
+                            Header: "_id",
+                            accessor: "_id",
+                          },
+                          // {
+                          //   Header: "CreatedAt",
+                          //   accessor: "createdAt",
+                          // },
+                          {
+                            Header: "Actions",
+                            accessor: "actions",
+                            sortable: false,
+                            filterable: false,
+                          },
+                        ]
+                      : [
+                          {
+                            Header: "Name",
+                            accessor: "fullname",
+                          },
+                          {
+                            Header: "Email",
+                            accessor: "email",
+                          },
+                          {
+                            Header: "Referrer",
+                            accessor: "referrer.label",
+                          },
+                          {
+                            Header: "Referrals",
+                            accessor: "referral_count",
+                          },
+                          {
+                            Header: "Referral Volume",
+                            accessor: "referral_volume",
+                          },
+                          {
+                            Header: "Billing Volume",
+                            accessor: "billing_volume",
+                          },
+                          {
+                            Header: "Wallet",
+                            accessor: "wallet",
+                          },
+                          {
+                            Header: "Referral Code",
+                            accessor: "referral_code",
+                          },
+                          {
+                            Header: "Active",
+                            accessor: "isActiveUser",
+                          },
+                        ]
+                  }
                   defaultPageSize={10}
                   showPaginationTop
                   showPaginationBottom={false}
@@ -556,123 +694,14 @@ const AppUser = ({ credential }) => {
           </Row>
         </div>
       </Modal>
-      <Modal isOpen={show2}>
-        <div className="modal-header">
-          <h4>Detail Info</h4>
-          <button
-            aria-label="Close"
-            className="close"
-            data-dismiss="modal"
-            type="button"
-            onClick={() => closeDetail()}
-          >
-            <i className="tim-icons icon-simple-remove" />
-          </button>
-        </div>
+      <Modal
+        isOpen={show2}
+        className={"custom_modal"}
+        toggle={() => closeDetail()}
+      >
         <div className="modal-body">
-          <Form className="form-horizontal">
-            <Row>
-              <Label md="3">Name</Label>
-              <Col md="9">
-                <FormGroup>
-                  <Input
-                    type="text"
-                    value={user.fullname || ""}
-                    onChange={() => {}}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Label md="3">Email</Label>
-              <Col md="9">
-                <FormGroup>
-                  <Input
-                    type="text"
-                    value={user.email || ""}
-                    onChange={() => {}}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Label md="3">Dial Code</Label>
-              <Col md="9">
-                <FormGroup>
-                  <Input
-                    type="text"
-                    value={user.dialcode || ""}
-                    onChange={() => {}}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Label md="3">Phone</Label>
-              <Col md="9">
-                <FormGroup>
-                  <Input
-                    type="text"
-                    value={user.phone || ""}
-                    onChange={() => {}}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Label md="3">Address</Label>
-              <Col md="9">
-                <FormGroup>
-                  <Input
-                    type="text"
-                    value={user.address || ""}
-                    onChange={() => {}}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Label md="3">Wallet</Label>
-              <Col md="9">
-                <FormGroup>
-                  <Input
-                    type="text"
-                    value={user.wallet || ""}
-                    onChange={() => {}}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            {!user._id && (
-              <Row>
-                <Label md="3">Default password</Label>
-                <Col md="9" className="mt-2">
-                  <FormGroup>
-                    <Input type="text" readOnly defaultValue="12345" />
-                  </FormGroup>
-                </Col>
-              </Row>
-            )}
-            <Row className="mt-1 mb-4">
-              <Label md="3">Referrer</Label>
-              <Col md="9">
-                <FormGroup>
-                  <FormGroup>
-                    <Input
-                      type="text"
-                      value={user.referrer ? user.referrer.label : ""}
-                      onChange={() => {}}
-                    />
-                  </FormGroup>
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row style={{ float: "right", marginRight: "2px" }}>
-              <Button color="btn1 btn-sm" onClick={() => closeDetail()}>
-                Close
-              </Button>
-            </Row>
-          </Form>
+          <Label className="appuser_detail_title">App User Details</Label>
+          <AppUserDetail id={user._id} />
         </div>
       </Modal>
       <Modal isOpen={show3}>

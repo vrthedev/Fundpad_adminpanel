@@ -18,6 +18,11 @@ import {
   CustomInput,
 } from "reactstrap";
 import Moment from "moment";
+import { jsPDF } from "jspdf";
+import wait from "./wait";
+import html2canvas from "html2canvas";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 import NotificationAlert from "react-notification-alert";
 import ReactTable from "components/ReactTable/ReactTable.js";
 
@@ -26,6 +31,7 @@ const Profit = ({ credential }) => {
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
   const [profit, setProfit] = useState({});
+  const [isExport, setIsExport] = useState(true);
   const { apiConfig, ApiCall } = global;
   const notificationAlertRef = React.useRef(null);
 
@@ -121,6 +127,41 @@ const Profit = ({ credential }) => {
     setShow1(false);
   };
 
+  const exportPDF = async () => {
+    setIsExport(false);
+    await wait(10);
+    const pdf = new jsPDF("landscape", "pt", "a4");
+    const data = await html2canvas(document.querySelector("#pdf"));
+    setIsExport(true);
+    const img = data.toDataURL("image/png");
+    const imgProperties = pdf.getImageProperties(img);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("profit.pdf");
+  };
+
+  const exportExcel = (d) => {
+    const profitData = d.map((p) => ({
+      Name: p.name,
+      Percentage: p.percentage,
+      "Preferred User Payouts": p.additional_payouts,
+      "Investor payouts": p.investor_payouts,
+      "Referral payouts": p.referral_payouts,
+    }));
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const wsProfit = XLSX.utils.json_to_sheet(profitData);
+    const wb = {
+      Sheets: { profit: wsProfit },
+      SheetNames: ["profit"],
+    };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "profit.xlsx");
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -193,47 +234,110 @@ const Profit = ({ credential }) => {
       <div className="content">
         <Row>
           <Col xs={12} md={12}>
-            <Card>
+            <Card id="pdf">
               <CardHeader>
-                <CardTitle tag="h3">Profits</CardTitle>
+                <CardTitle tag="h3">
+                  <span style={{ fontSize: "28px" }}>
+                    <div className="flex-row" style={{ marginLeft: 20 }}>
+                      Profits
+                      <div style={{ float: "right" }}>
+                        {isExport && (
+                          <>
+                            <span
+                              style={{
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportPDF()}
+                            >
+                              PDF
+                            </span>
+                            <span
+                              style={{
+                                marginLeft: 20,
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportExcel(data)}
+                            >
+                              Excel
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </span>
+                </CardTitle>
               </CardHeader>
               <CardBody>
                 <ReactTable
                   data={data}
+                  isExport={isExport}
                   filterable
                   resizable={false}
-                  columns={[
-                    {
-                      Header: "Name",
-                      accessor: "name",
-                    },
-                    {
-                      Header: "Percentage",
-                      accessor: "percentage",
-                    },
-                    {
-                      Header: "Preferred User Payouts",
-                      accessor: "additional_payouts",
-                    },
-                    {
-                      Header: "Investor payouts",
-                      accessor: "investor_payouts",
-                    },
-                    {
-                      Header: "Referral payouts",
-                      accessor: "referral_payouts",
-                    },
-                    // {
-                    //   Header: "CreatedAt",
-                    //   accessor: "createdAt",
-                    // },
-                    {
-                      Header: "Actions",
-                      accessor: "actions",
-                      sortable: false,
-                      filterable: false,
-                    },
-                  ]}
+                  columns={
+                    !isExport
+                      ? [
+                          {
+                            Header: "Name",
+                            accessor: "name",
+                          },
+                          {
+                            Header: "Percentage",
+                            accessor: "percentage",
+                          },
+                          {
+                            Header: "Preferred User Payouts",
+                            accessor: "additional_payouts",
+                          },
+                          {
+                            Header: "Investor payouts",
+                            accessor: "investor_payouts",
+                          },
+                          {
+                            Header: "Referral payouts",
+                            accessor: "referral_payouts",
+                          },
+                          // {
+                          //   Header: "CreatedAt",
+                          //   accessor: "createdAt",
+                          // },
+                        ]
+                      : [
+                          {
+                            Header: "Name",
+                            accessor: "name",
+                          },
+                          {
+                            Header: "Percentage",
+                            accessor: "percentage",
+                          },
+                          {
+                            Header: "Preferred User Payouts",
+                            accessor: "additional_payouts",
+                          },
+                          {
+                            Header: "Investor payouts",
+                            accessor: "investor_payouts",
+                          },
+                          {
+                            Header: "Referral payouts",
+                            accessor: "referral_payouts",
+                          },
+                          // {
+                          //   Header: "CreatedAt",
+                          //   accessor: "createdAt",
+                          // },
+                          {
+                            Header: "Actions",
+                            accessor: "actions",
+                            sortable: false,
+                            filterable: false,
+                          },
+                        ]
+                  }
                   defaultPageSize={10}
                   showPaginationTop
                   showPaginationBottom={false}

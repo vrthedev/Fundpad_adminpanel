@@ -16,6 +16,9 @@
   .ReactTable.-striped .rt-tr.-odd {
     background-color: rgba(0, 0, 0, 0.05);
   }
+  .ReactTable.-striped .rt-tr.-active {
+    background-color: #99f4b0;
+  }
   .rbc-today {
     background: darken($light-bg, 10%);
   }

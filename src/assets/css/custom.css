@@ -1,0 +1,13 @@
+.custom_modal {
+    max-width: 700px !important;
+    min-width: 500px !important;
+    transform: translate(0, 0) !important;
+}
+
+.appuser_detail_title {
+    color: #1d253b;
+    font-size: 22px;
+    font-style: bold;
+    font-weight: 600;
+    padding-left: 20px;
+}

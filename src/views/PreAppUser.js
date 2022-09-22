@@ -21,6 +21,11 @@ import Moment from "moment";
 import Select from "react-select";
 import NotificationAlert from "react-notification-alert";
 import ReactTable from "components/ReactTable/ReactTable.js";
+import { jsPDF } from "jspdf";
+import wait from "./wait";
+import html2canvas from "html2canvas";
+import * as FileSaver from "file-saver";
+import * as XLSX from "xlsx";
 
 const AppUser = ({ credential }) => {
   const { apiConfig, ApiCall } = global;
@@ -30,6 +35,7 @@ const AppUser = ({ credential }) => {
   const [show, setShow] = useState(false);
   const [show1, setShow1] = useState(false);
   const [user, setUser] = useState({});
+  const [isExport, setIsExport] = useState(true);
 
   const notify = (message, type) => {
     let options = {};
@@ -44,7 +50,6 @@ const AppUser = ({ credential }) => {
   };
 
   const openModal = (data) => {
-    console.log(data, "--------data in open");
     setUser(data);
     setShow(true);
   };
@@ -139,6 +144,38 @@ const AppUser = ({ credential }) => {
     return { value: tmp[0]._id, label: tmp[0].fullname };
   };
 
+  const exportPDF = async () => {
+    setIsExport(false);
+    await wait(10);
+    const pdf = new jsPDF("landscape", "pt", "a4");
+    const data = await html2canvas(document.querySelector("#pdf"));
+    setIsExport(true);
+    const img = data.toDataURL("image/png");
+    const imgProperties = pdf.getImageProperties(img);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("preappuser.pdf");
+  };
+
+  const exportExcel = (d) => {
+    const preappuserData = d.map((p) => ({
+      "App user": p.username,
+      Percentage: p.percentage,
+    }));
+    const fileType =
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const wsPreappuser = XLSX.utils.json_to_sheet(preappuserData);
+    const wb = {
+      Sheets: { preappuser: wsPreappuser },
+      SheetNames: ["preappuser"],
+    };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, "preappuser.xlsx");
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -216,36 +253,86 @@ const AppUser = ({ credential }) => {
       <div className="content">
         <Row>
           <Col xs={12} md={12}>
-            <Card>
+            <Card id="pdf">
               <CardHeader>
-                <CardTitle tag="h3">Preferred App Users</CardTitle>
+                <CardTitle tag="h3">
+                  <span style={{ fontSize: "28px" }}>
+                    <div className="flex-row" style={{ marginLeft: 20 }}>
+                      Preferred App Users
+                      <div style={{ float: "right" }}>
+                        {isExport && (
+                          <>
+                            <span
+                              style={{
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportPDF()}
+                            >
+                              PDF
+                            </span>
+                            <span
+                              style={{
+                                marginLeft: 20,
+                                cursor: "pointer",
+                                fontSize: 16,
+                                color: "rgba(34, 42, 66, 0.7)",
+                              }}
+                              onClick={() => exportExcel(data)}
+                            >
+                              Excel
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </span>
+                </CardTitle>
               </CardHeader>
               <CardBody>
-                <p>This is only additional percentage, preferred user have already been sent their share from 50% profit share.</p>
+                <p>
+                  This is only additional percentage, preferred user have
+                  already been sent their share from 50% profit share.
+                </p>
                 <ReactTable
                   data={data}
+                  isExport={isExport}
                   filterable
                   resizable={false}
-                  columns={[
-                    {
-                      Header: "App user",
-                      accessor: "username",
-                    },
-                    {
-                      Header: "Percentage",
-                      accessor: "percentage",
-                    },
-                    // {
-                    //   Header: "CreatedAt",
-                    //   accessor: "createdAt",
-                    // },
-                    {
-                      Header: "Actions",
-                      accessor: "actions",
-                      sortable: false,
-                      filterable: false,
-                    },
-                  ]}
+                  columns={
+                    isExport
+                      ? [
+                          {
+                            Header: "App user",
+                            accessor: "username",
+                          },
+                          {
+                            Header: "Percentage",
+                            accessor: "percentage",
+                          },
+                          // {
+                          //   Header: "CreatedAt",
+                          //   accessor: "createdAt",
+                          // },
+                          {
+                            Header: "Actions",
+                            accessor: "actions",
+                            sortable: false,
+                            filterable: false,
+                          },
+                        ]
+                      : [
+                          {
+                            Header: "App user",
+                            accessor: "username",
+                          },
+                          {
+                            Header: "Percentage",
+                            accessor: "percentage",
+                          },
+                        ]
+                  }
                   defaultPageSize={10}
                   showPaginationTop
                   showPaginationBottom={false}
