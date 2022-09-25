@@ -183,7 +183,7 @@ const News = ({ credential }) => {
           <Col xs={12} md={12}>
             <Card>
               <CardHeader>
-                <CardTitle tag="h3">News</CardTitle>
+                <CardTitle tag="h3">Coming Soon</CardTitle>
               </CardHeader>
               <CardBody>
                 <ReactTable
@@ -223,7 +223,7 @@ const News = ({ credential }) => {
       </div>
       <Modal isOpen={show}>
         <div className="modal-header">
-          <h4>{newsOne._id ? "Edit " : "Add "}News</h4>
+          <h4>{newsOne._id ? "Edit " : "Add "}Coming Soon</h4>
           <button
             aria-label="Close"
             className="close"

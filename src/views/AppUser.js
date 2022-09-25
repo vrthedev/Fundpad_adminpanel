@@ -179,7 +179,6 @@ const AppUser = ({ credential }) => {
   };
 
   const selRow = (data) => {
-    console.log(data.values, "---------sel row in reacttable");
     showDetail(data.values);
   };
 
@@ -294,6 +293,8 @@ const AppUser = ({ credential }) => {
                   </span>
                 ),
                 isis: p.isActiveUser ? 1 : 0,
+                referral_volume: "$" + p.referral_volume,
+                billing_volume: "$" + p.billing_volume,
               };
             })
           );
@@ -460,10 +461,10 @@ const AppUser = ({ credential }) => {
                             Header: "Wallet",
                             accessor: "wallet",
                           },
-                          {
-                            Header: "Referral Code",
-                            accessor: "referral_code",
-                          },
+                          // {
+                          //   Header: "Referral Code",
+                          //   accessor: "referral_code",
+                          // },
                           {
                             Header: "Active",
                             accessor: "isActiveUser",
@@ -516,10 +517,10 @@ const AppUser = ({ credential }) => {
                             Header: "Wallet",
                             accessor: "wallet",
                           },
-                          {
-                            Header: "Referral Code",
-                            accessor: "referral_code",
-                          },
+                          // {
+                          //   Header: "Referral Code",
+                          //   accessor: "referral_code",
+                          // },
                           {
                             Header: "Active",
                             accessor: "isActiveUser",

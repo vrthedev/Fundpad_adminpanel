@@ -254,7 +254,7 @@ function Table({ columns, data, openModal, isExport, selRow }) {
                   {...row.getRowProps()}
                   className={classnames(
                     "rt-tr",
-                    { " -active": row.cells[9].value === 1 },
+                    { " -active": row.cells[8].value === 1 },
                     { " -odd": i % 2 === 0 && !row.isis === 0 },
                     { " -even": i % 2 === 1 && !row.isis === 0 }
                   )}
@@ -263,7 +263,7 @@ function Table({ columns, data, openModal, isExport, selRow }) {
                   {row.cells.map((cell, index) => {
                     return (
                       <>
-                        {index === 9 || index === 10 ? (
+                        {index === 8 || index === 9 ? (
                           <></>
                         ) : (
                           <td

@@ -43,3 +43,20 @@
 .next_prev_btn:selected {
     border: 0px;
 }
+
+.cccc {
+    display: inline-block;
+    margin: auto;
+    position: relative;
+    width: 100%;
+}
+
+#currency {
+    padding-left: 35px;
+}
+
+.currency {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+}

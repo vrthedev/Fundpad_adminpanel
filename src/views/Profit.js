@@ -190,13 +190,13 @@ const Profit = ({ credential }) => {
         createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
         percentage: prop.percentage + "%",
         additional_payouts: prop.additional_payouts
-          ? prop.additional_payouts + "$"
+          ? "$" + prop.additional_payouts
           : "",
         investor_payouts: prop.investor_payouts
-          ? prop.investor_payouts + "$"
+          ? "$" + prop.investor_payouts
           : "",
         referral_payouts: prop.referral_payouts
-          ? prop.referral_payouts + "$"
+          ? "$" + prop.referral_payouts
           : "",
         actions: (
           <div className="actions-right">
@@ -293,11 +293,11 @@ const Profit = ({ credential }) => {
                             accessor: "additional_payouts",
                           },
                           {
-                            Header: "Investor payouts",
+                            Header: "My Total Profits",
                             accessor: "investor_payouts",
                           },
                           {
-                            Header: "Referral payouts",
+                            Header: "My Referral Profits",
                             accessor: "referral_payouts",
                           },
                           // {
@@ -319,11 +319,11 @@ const Profit = ({ credential }) => {
                             accessor: "additional_payouts",
                           },
                           {
-                            Header: "Investor payouts",
+                            Header: "My Total Profits",
                             accessor: "investor_payouts",
                           },
                           {
-                            Header: "Referral payouts",
+                            Header: "My Referral Profits",
                             accessor: "referral_payouts",
                           },
                           // {
@@ -382,13 +382,17 @@ const Profit = ({ credential }) => {
               <Label md="3">Percentage</Label>
               <Col md="9">
                 <FormGroup>
-                  <Input
-                    type="number"
-                    value={profit.percentage}
-                    onChange={(e) => {
-                      setProfit({ ...profit, percentage: e.target.value });
-                    }}
-                  />
+                  <div className="cccc">
+                    <Input
+                      id="currency"
+                      type="number"
+                      value={profit.percentage}
+                      onChange={(e) => {
+                        setProfit({ ...profit, percentage: e.target.value });
+                      }}
+                    />
+                    <span className="currency">%</span>
+                  </div>
                 </FormGroup>
               </Col>
             </Row>

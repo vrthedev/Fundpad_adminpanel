@@ -385,13 +385,17 @@ const AppUser = ({ credential }) => {
               <Label md="3">Percentage</Label>
               <Col md="9">
                 <FormGroup>
-                  <Input
-                    type="number"
-                    value={user.percentage}
-                    onChange={(e) => {
-                      setUser({ ...user, percentage: e.target.value });
-                    }}
-                  />
+                  <div className="cccc">
+                    <Input
+                      id="currency"
+                      type="number"
+                      value={user.percentage}
+                      onChange={(e) => {
+                        setUser({ ...user, percentage: e.target.value });
+                      }}
+                    />
+                    <span className="currency">$</span>
+                  </div>
                 </FormGroup>
               </Col>
             </Row>

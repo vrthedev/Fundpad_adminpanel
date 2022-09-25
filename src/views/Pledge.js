@@ -458,14 +458,19 @@ const Pledge = ({ credential }) => {
               <Label md="3">Amount</Label>
               <Col md="9">
                 <FormGroup>
-                  <Input
-                    type="number"
-                    style={{ color: "rgb(112 114 118)" }}
-                    value={pledge.amount}
-                    onChange={(e) =>
-                      setPledge({ ...pledge, amount: e.target.value })
-                    }
-                  />
+                  <div className="cccc">
+                    <Input
+                      id="currency"
+                      type="number"
+                      fullWidth
+                      style={{ color: "rgb(112 114 118)" }}
+                      value={pledge.amount}
+                      onChange={(e) =>
+                        setPledge({ ...pledge, amount: e.target.value })
+                      }
+                    />
+                    <span className="currency">$</span>
+                  </div>
                 </FormGroup>
               </Col>
             </Row>

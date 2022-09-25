@@ -108,7 +108,7 @@ const routes = [
   },
   {
     path: "/news",
-    name: "News",
+    name: "Coming Soon",
     rtlName: "يتعهد",
     icon: "tim-icons icon-map-big",
     component: News,

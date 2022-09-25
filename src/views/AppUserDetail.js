@@ -232,15 +232,21 @@ const AppUserDetail = ({ credential, id }) => {
                   <h4>{`Payout Wallet: ${user.wallet || ""}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Pledge: ${user.pledged_amount || ""}$`}</h4>
+                  <h4>{`Pledge: $${user.pledged_amount || ""}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Account Balance: ${user.confirmed_amount || ""}$`}</h4>
+                  <h4>{`Account Balance: $${user.confirmed_amount || ""}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Total Payout: ${user.investor_payouts || ""}$`}</h4>
+                  <h4>{`Total account payout: $${
+                    user.investor_payouts || ""
+                  }`}</h4>
                 </Row>
-
+                <Row style={{ marginLeft: 5 }}>
+                  <h4>{`Total Commission Payout: $${
+                    user.referral_payouts || ""
+                  }`}</h4>
+                </Row>
                 <Row style={{ marginLeft: 5 }}>
                   <h4>{`Referral code: ${user.referral_code || ""}`}</h4>
                 </Row>
@@ -248,10 +254,10 @@ const AppUserDetail = ({ credential, id }) => {
                   <h4>{`Referrals: ${user.referral_count}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Billing Volume: ${user.billing_volume}$`}</h4>
+                  <h4>{`Billing Volume: $${user.billing_volume}`}</h4>
                 </Row>
                 <Row style={{ marginLeft: 5 }}>
-                  <h4>{`Referral Volume: ${user.referral_volume}$`}</h4>
+                  <h4>{`Referral Volume: $${user.referral_volume}`}</h4>
                 </Row>
               </CardBody>
             </Card>
