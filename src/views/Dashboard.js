@@ -117,10 +117,10 @@ const Dashboard = ({ credential }) => {
       gradientStroke.addColorStop(0, "rgba(119,52,169,0)"); //purple colors
 
       return {
-        labels: profits.map((p) => p.name),
+        labels: profits.map((p) => p.year + "-" + p.month),
         datasets: [
           {
-            label: `Profits ${total_investor_payouts}$`,
+            label: `Profits $${total_investor_payouts}`,
             fill: true,
             backgroundColor: "#f36648",
             hoverBackgroundColor: "#f36648",
@@ -131,7 +131,7 @@ const Dashboard = ({ credential }) => {
             data: profits.map((p) => p.investor_payouts || 0),
           },
           {
-            label: `Commissions ${total_referral_payouts}$`,
+            label: `Commissions $${total_referral_payouts}`,
             fill: true,
             backgroundColor: "#7a48f3",
             hoverBackgroundColor: "#7a48f3",
@@ -360,20 +360,20 @@ const Dashboard = ({ credential }) => {
         "Pledges (no.)": d.pledges_num,
         "Active App Users": d.active_users,
         "TXID Submitted (no.)": d.received_num,
-        "Pledges ($)": d.pledges_total + "$",
-        "Active Users": d.received_total + "$",
-        "Target Amount": d.fund_target + "$",
-        "Pledged amount": d.fund_raised + "$",
+        "Pledges ($)": "$" + d.pledges_total,
+        "Active Users": "$" + d.received_total,
+        "Target Amount": "$" + d.fund_target,
+        "Pledged amount": "$" + d.fund_raised,
         "Pledged Percentage":
           Math.round((d.fund_raised / d.fund_target) * 100) + "%",
       },
     ];
     const profitData = profits.map((p) => ({
-      "Profit Name": p.name,
+      "Profit Name": p.year + "-" + p.month,
       Percentage: p.percentage + "%",
-      "Investor Payouts": p.investor_payouts + "$",
-      "Referral Payouts": p.referral_payouts + "$",
-      "Additional Payouts": p.additional_payouts + "$",
+      "Investor Payouts": "$" + p.investor_payouts,
+      "Referral Payouts": "$" + p.referral_payouts,
+      "Additional Payouts": "$" + p.additional_payouts,
       CreatedAt: Moment(p.createdAt).format("DD/MM/YYYY hh:mm:ss"),
     }));
     const fileType =
@@ -542,7 +542,7 @@ const Dashboard = ({ credential }) => {
                       <Col xs="7">
                         <div className="numbers">
                           <p className="card-category">Pledges ($)</p>
-                          <CardTitle tag="h3">{data.pledges_total}$</CardTitle>
+                          <CardTitle tag="h3">${data.pledges_total}</CardTitle>
                         </div>
                       </Col>
                     </Row>
@@ -567,7 +567,7 @@ const Dashboard = ({ credential }) => {
                       <Col xs="7">
                         <div className="numbers">
                           <p className="card-category">Active Users ($)</p>
-                          <CardTitle tag="h3">{data.received_total}$</CardTitle>
+                          <CardTitle tag="h3">${data.received_total}</CardTitle>
                         </div>
                       </Col>
                     </Row>
@@ -609,12 +609,12 @@ const Dashboard = ({ credential }) => {
             <div style={{ marginTop: 10 }}>
               <h4
                 style={{ color: "#808080" }}
-              >{`Target Amount: ${data.fund_target} $`}</h4>
+              >{`Target Amount: $${data.fund_target}`}</h4>
             </div>
             <div style={{ marginTop: 0 }}>
               <h4
                 style={{ color: "#808080" }}
-              >{`Pledged amount: ${data.fund_raised} $`}</h4>
+              >{`Pledged amount: $${data.fund_raised}`}</h4>
             </div>
             <div style={{ marginTop: 0 }}>
               <h4
@@ -639,12 +639,12 @@ const Dashboard = ({ credential }) => {
             <div style={{ marginTop: 10 }}>
               <h4
                 style={{ color: "#808080" }}
-              >{`Target Amount: ${data.fund_target} $`}</h4>
+              >{`Target Amount: $${data.fund_target}`}</h4>
             </div>
             <div style={{ marginTop: 0 }}>
               <h4
                 style={{ color: "#808080" }}
-              >{`Confirmed amount: ${data.received_total} $`}</h4>
+              >{`Confirmed amount: $${data.received_total}`}</h4>
             </div>
           </Col>
         </Row>

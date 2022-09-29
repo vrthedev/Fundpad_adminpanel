@@ -187,6 +187,7 @@ const Profit = ({ credential }) => {
     var data = profits.map((prop, key) => {
       return {
         ...prop,
+        name: prop.year && prop.month ? prop.year + "-" + [prop.month] : "",
         createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
         percentage: prop.percentage + "%",
         additional_payouts: prop.additional_payouts
@@ -281,7 +282,7 @@ const Profit = ({ credential }) => {
                     !isExport
                       ? [
                           {
-                            Header: "Name",
+                            Header: "Date",
                             accessor: "name",
                           },
                           {
@@ -307,7 +308,7 @@ const Profit = ({ credential }) => {
                         ]
                       : [
                           {
-                            Header: "Name",
+                            Header: "Date",
                             accessor: "name",
                           },
                           {
@@ -365,14 +366,28 @@ const Profit = ({ credential }) => {
         <div className="modal-body">
           <Form className="form-horizontal">
             <Row>
-              <Label md="3">Name</Label>
+              <Label md="3">Year</Label>
               <Col md="9">
                 <FormGroup>
                   <Input
-                    type="text"
-                    value={profit.name}
+                    type="number"
+                    value={profit.year}
                     onChange={(e) => {
-                      setProfit({ ...profit, name: e.target.value });
+                      setProfit({ ...profit, year: e.target.value });
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Label md="3">Month</Label>
+              <Col md="9">
+                <FormGroup>
+                  <Input
+                    type="number"
+                    value={profit.month}
+                    onChange={(e) => {
+                      setProfit({ ...profit, month: e.target.value });
                     }}
                   />
                 </FormGroup>

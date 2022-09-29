@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Card, CardBody, CardHeader, CardTitle, Row, Col, Button } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  CardTitle,
+  Row,
+  Col,
+  Button,
+} from "reactstrap";
 import { connect } from "react-redux";
 import NotificationAlert from "react-notification-alert";
 import ReactTable from "components/ReactTable/ReactTable2.js";
@@ -192,7 +200,7 @@ const ProfitDetail = ({ credential }) => {
     profitInfo.investor_payouts.map((p) => tmp.push(p));
     profitInfo.referral_payouts.map((p) => tmp.push(p));
     const profits = tmp.map((p) => ({
-      "Profit Name": p.profit_name,
+      "Profit Name": p.year + "-" + p.month,
       Type: p.type === 1 ? "Investor" : "Referrer",
       Investor: getUserName(p.app_user_id),
       "Base Amount": p.base_amount,
@@ -298,7 +306,10 @@ const ProfitDetail = ({ credential }) => {
                 {profitInfo.investor_payouts && (
                   <div style={{ marginTop: "20px" }}>
                     <ReactTable
-                      data={profitInfo.investor_payouts}
+                      data={profitInfo.investor_payouts.map((p) => ({
+                        ...p,
+                        profit_name: p.year + "-" + p.month,
+                      }))}
                       title="Investor Payouts"
                       isProfit={true}
                       isExport={isExport}
@@ -340,7 +351,10 @@ const ProfitDetail = ({ credential }) => {
                 {profitInfo.referral_payouts && (
                   <div style={{ marginTop: "20px" }}>
                     <ReactTable
-                      data={profitInfo.referral_payouts}
+                      data={profitInfo.referral_payouts.map((p) => ({
+                        ...p,
+                        profit_name: p.year + "-" + p.month,
+                      }))}
                       isProfit={true}
                       profitType={2}
                       title="Referral Payouts"
@@ -383,7 +397,10 @@ const ProfitDetail = ({ credential }) => {
                 {profitInfo.additional_payouts && (
                   <div style={{ marginTop: "20px" }}>
                     <ReactTable
-                      data={profitInfo.additional_payouts}
+                      data={profitInfo.additional_payouts.map((p) => ({
+                        ...p,
+                        profit_name: p.year + "-" + p.month,
+                      }))}
                       title="Preferred User Payouts"
                       isProfit={true}
                       isExport={isExport}

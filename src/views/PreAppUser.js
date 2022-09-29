@@ -218,6 +218,7 @@ const AppUser = ({ credential }) => {
     app_user_id: getUser(prop.app_user_id),
     username: getUserName(prop.app_user_id),
     percentage: prop.percentage + "%",
+    date: prop.year && prop.month ? prop.year + "-" + [prop.month] : "",
     createdAt: Moment(prop.createdAt).format("DD/MM/YYYY hh:mm:ss"),
     actions: (
       <div className="actions-right">
@@ -308,6 +309,10 @@ const AppUser = ({ credential }) => {
                             accessor: "username",
                           },
                           {
+                            Header: "Date",
+                            accessor: "date",
+                          },
+                          {
                             Header: "Percentage",
                             accessor: "percentage",
                           },
@@ -326,6 +331,10 @@ const AppUser = ({ credential }) => {
                           {
                             Header: "App user",
                             accessor: "username",
+                          },
+                          {
+                            Header: "Date",
+                            accessor: "date",
                           },
                           {
                             Header: "Percentage",
@@ -378,6 +387,40 @@ const AppUser = ({ credential }) => {
                       }))}
                     />
                   </FormGroup>
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Label md="3">Year</Label>
+              <Col md="9">
+                <FormGroup>
+                  <div className="cccc">
+                    <Input
+                      id="year"
+                      type="number"
+                      value={user.year}
+                      onChange={(e) => {
+                        setUser({ ...user, year: e.target.value });
+                      }}
+                    />
+                  </div>
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Label md="3">Month</Label>
+              <Col md="9">
+                <FormGroup>
+                  <div className="cccc">
+                    <Input
+                      id="month"
+                      type="number"
+                      value={user.month}
+                      onChange={(e) => {
+                        setUser({ ...user, month: e.target.value });
+                      }}
+                    />
+                  </div>
                 </FormGroup>
               </Col>
             </Row>

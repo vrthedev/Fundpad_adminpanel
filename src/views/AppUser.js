@@ -31,9 +31,9 @@ import "../assets/css/custom.css";
 
 const AppUser = ({ credential }) => {
   const [users, setUsers] = useState([]);
-  const [show, setShow] = useState(false);
-  const [show1, setShow1] = useState(false);
-  const [show2, setShow2] = useState(false);
+  const [show, setShow] = useState(false); //edit modal
+  const [show1, setShow1] = useState(false); //delete modal
+  const [show2, setShow2] = useState(false); //detail modal
   const [show3, setShow3] = useState(false);
   const [user, setUser] = useState({});
   const [isExport, setIsExport] = useState(true);
@@ -63,8 +63,8 @@ const AppUser = ({ credential }) => {
   };
 
   const showDetail = (data) => {
-    setUser(data);
-    setShow2(true);
+      setUser(data);
+      setShow2(true);
   };
 
   const showChange = (data) => {
@@ -179,7 +179,7 @@ const AppUser = ({ credential }) => {
   };
 
   const selRow = (data) => {
-    showDetail(data.values);
+    // showDetail(data.values);
   };
 
   const remove = async (data) => {
@@ -334,17 +334,7 @@ const AppUser = ({ credential }) => {
               style={{ opacity: 0.7 }}
             >
               <i class="fa fa-eye" aria-hidden="false"></i>
-            </Button>{" "}
-            {/* <Link to={`/admin/appuserDetail/${prop._id}`}>
-              <Button
-                color="warning"
-                size="sm"
-                className={classNames("btn-icon btn-link like btn-neutral")}
-                style={{ opacity: 0.7 }}
-              >
-                <i class="fa fa-eye" aria-hidden="false"></i>
-              </Button>{" "}
-            </Link> */}
+            </Button>
             <Button
               onClick={() => openModal(prop)}
               color="warning"
@@ -433,14 +423,6 @@ const AppUser = ({ credential }) => {
                             Header: "Email",
                             accessor: "email",
                           },
-                          // {
-                          //   Header: "Phone",
-                          //   accessor: "phone",
-                          // },
-                          // {
-                          //   Header: "Address",
-                          //   accessor: "address",
-                          // },
                           {
                             Header: "Referrer",
                             accessor: "referrer.label",
@@ -461,10 +443,6 @@ const AppUser = ({ credential }) => {
                             Header: "Wallet",
                             accessor: "wallet",
                           },
-                          // {
-                          //   Header: "Referral Code",
-                          //   accessor: "referral_code",
-                          // },
                           {
                             Header: "Active",
                             accessor: "isActiveUser",
@@ -477,10 +455,6 @@ const AppUser = ({ credential }) => {
                             Header: "_id",
                             accessor: "_id",
                           },
-                          // {
-                          //   Header: "CreatedAt",
-                          //   accessor: "createdAt",
-                          // },
                           {
                             Header: "Actions",
                             accessor: "actions",
