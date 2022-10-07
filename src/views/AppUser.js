@@ -63,8 +63,8 @@ const AppUser = ({ credential }) => {
   };
 
   const showDetail = (data) => {
-      setUser(data);
-      setShow2(true);
+    setUser(data);
+    setShow2(true);
   };
 
   const showChange = (data) => {
@@ -86,13 +86,16 @@ const AppUser = ({ credential }) => {
           }
         );
         if (response.data.result) {
+          notify(response.data.data, "success");
+
           const resp = await ApiCall(
             apiConfig.appuser_get.url,
             apiConfig.appuser_get.method,
             credential.loginToken
           );
           if (resp.data.result) {
-            let tmp = response.data.data;
+            let tmp = resp.data.data;
+            console.log(tmp);
             setUsers(
               resp.data.data.map((p) => {
                 const refs = tmp.filter((r) => p.referrer_id === r._id);
@@ -105,13 +108,12 @@ const AppUser = ({ credential }) => {
                 };
               })
             );
-          } else {
-            notify(resp.data.message, "danger");
           }
         } else {
           notify(response.data.data, "danger");
         }
       } catch (error) {
+        console.log(error);
         notify("Failed", "danger");
       }
     })();
